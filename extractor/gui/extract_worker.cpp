@@ -1,6 +1,7 @@
 #include "extract_worker.h"
 #include <QProcess>
 #include <QCoreApplication>
+#include <QRegularExpression>
 
 ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &destDir, QObject *parent)
 	: QThread(parent)
@@ -26,7 +27,6 @@ void ExtractWorker::run() {
 		return;
 	}
 
-	QString dest = m_destDir;
 	if (ret == 101) {
 		emit log(">>> Tipo: Jogo base");
 	} else if (ret == 102) {
@@ -35,17 +35,64 @@ void ExtractWorker::run() {
 		emit log(">>> Tipo: DLC");
 	}
 
-	emit log(QString(">>> Extraindo para: %1").arg(dest));
+	emit log(QString(">>> Extraindo para: %1").arg(m_destDir));
 
 	QProcess extract;
 	extract.setProcessChannelMode(QProcess::MergedChannels);
-	extract.start(cliPath, {m_pkgPath, dest});
+	extract.start(cliPath, {m_pkgPath, m_destDir});
 
-	while (extract.canReadLine()) {
-		emit log("    " + QString::fromUtf8(extract.readLine()));
+	QRegularExpression progressRegex(R"(Extracting file (\d+) of (\d+))");
+	QString buffer;
+
+	while (extract.state() != QProcess::NotRunning) {
+		extract.waitForReadyRead(100);
+
+		QByteArray data = extract.readAllStandardOutput();
+		if (data.isEmpty()) continue;
+
+		buffer += QString::fromUtf8(data);
+
+		while (true) {
+			int nlIdx = buffer.indexOf('\n');
+			if (nlIdx < 0) break;
+
+			QString line = buffer.left(nlIdx).trimmed();
+			buffer = buffer.mid(nlIdx + 1);
+
+			if (line.isEmpty()) continue;
+
+			QRegularExpressionMatch match = progressRegex.match(line);
+			if (match.hasMatch()) {
+				int current = match.captured(1).toInt();
+				int total = match.captured(2).toInt();
+				emit progress(current, total);
+			} else {
+				emit log("    " + line);
+			}
+		}
+
+		if (!buffer.isEmpty()) {
+			QRegularExpressionMatch match = progressRegex.match(buffer);
+			if (match.hasMatch()) {
+				int current = match.captured(1).toInt();
+				int total = match.captured(2).toInt();
+				emit progress(current, total);
+				buffer.clear();
+			}
+		}
 	}
 
-	extract.waitForFinished(-1);
+	extract.waitForFinished(5000);
+
+	QByteArray remaining = extract.readAllStandardOutput();
+	if (!remaining.isEmpty()) {
+		buffer += QString::fromUtf8(remaining);
+		QStringList lines = buffer.split('\n', Qt::SkipEmptyParts);
+		for (const QString &line : lines) {
+			emit log("    " + line.trimmed());
+		}
+	}
+
 	int finalRet = extract.exitCode();
 
 	if (finalRet == 0) {

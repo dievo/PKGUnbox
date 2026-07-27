@@ -12,6 +12,7 @@ public:
 
 signals:
 	void log(const QString &message);
+	void progress(int current, int total);
 	void finished(int returnCode);
 
 private:

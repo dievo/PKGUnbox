@@ -27,6 +27,7 @@ private slots:
 	void onStartExtraction();
 	void onSaveSettings();
 	void onExtractionLog(const QString &message);
+	void onExtractionProgress(int current, int total);
 	void onExtractionFinished(int returnCode);
 
 private:

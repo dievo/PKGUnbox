@@ -9,6 +9,8 @@
 #include <QMimeData>
 #include <QFont>
 #include <QFileInfo>
+#include <QIcon>
+#include <QApplication>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -30,6 +32,15 @@ void MainWindow::setupUI() {
 	setWindowTitle("PKG Extractor - ShadPs4Plus");
 	setMinimumSize(700, 520);
 	setAcceptDrops(true);
+
+	QString appDir = QApplication::applicationDirPath();
+	QString iconPath = appDir + "/../share/pkg_extractor/icon.png";
+	if (!QFileInfo::exists(iconPath)) {
+		iconPath = appDir + "/icon.png";
+	}
+	if (QFileInfo::exists(iconPath)) {
+		setWindowIcon(QIcon(iconPath));
+	}
 
 	auto *central = new QWidget(this);
 	setCentralWidget(central);
@@ -94,7 +105,10 @@ void MainWindow::setupUI() {
 
 	// === Progresso ===
 	m_progressBar = new QProgressBar();
+	m_progressBar->setRange(0, 100);
+	m_progressBar->setValue(0);
 	m_progressBar->setVisible(false);
+	m_progressBar->setFormat("%v%");
 	layout->addWidget(m_progressBar);
 
 	// === Log ===
@@ -158,10 +172,12 @@ void MainWindow::onStartExtraction() {
 
 	m_extractBtn->setEnabled(false);
 	m_progressBar->setVisible(true);
+	m_progressBar->setValue(0);
 	m_logArea->clear();
 
 	m_worker = new ExtractWorker(pkgPath, gamesDir, this);
 	connect(m_worker, &ExtractWorker::log, this, &MainWindow::onExtractionLog);
+	connect(m_worker, &ExtractWorker::progress, this, &MainWindow::onExtractionProgress);
 	connect(m_worker, &ExtractWorker::finished, this, &MainWindow::onExtractionFinished);
 	m_worker->start();
 }
@@ -170,12 +186,23 @@ void MainWindow::onExtractionLog(const QString &message) {
 	m_logArea->append(message);
 }
 
+void MainWindow::onExtractionProgress(int current, int total) {
+	if (total > 0) {
+		int percent = static_cast<int>((static_cast<double>(current) / total) * 100);
+		m_progressBar->setValue(percent);
+		m_statusLabel->setText(QString("Extraindo: %1 / %2 arquivos").arg(current).arg(total));
+	}
+}
+
 void MainWindow::onExtractionFinished(int returnCode) {
 	m_extractBtn->setEnabled(true);
 	m_progressBar->setVisible(false);
+	m_progressBar->setValue(0);
 
 	if (returnCode == 0) {
 		m_statusLabel->setText("Extração concluída!");
+		m_progressBar->setValue(100);
+		m_progressBar->setVisible(true);
 	} else {
 		m_statusLabel->setText(QString("Falha (código %1)").arg(returnCode));
 	}
