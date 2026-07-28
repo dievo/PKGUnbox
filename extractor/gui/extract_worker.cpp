@@ -10,7 +10,7 @@ ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &destDir, QOb
 {}
 
 void ExtractWorker::run() {
-	QString cliPath = QCoreApplication::applicationDirPath() + "/pkg_extractor";
+	QString cliPath = QCoreApplication::applicationDirPath() + "/pkgunbox";
 
 	emit log(QString(">>> Verificando tipo: %1").arg(m_pkgPath));
 
