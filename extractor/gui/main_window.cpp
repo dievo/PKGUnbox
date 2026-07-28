@@ -34,7 +34,7 @@ void MainWindow::setupUI() {
 	setAcceptDrops(true);
 
 	QString appDir = QApplication::applicationDirPath();
-	QString iconPath = appDir + "/../share/pkg_extractor/icon.png";
+	QString iconPath = appDir + "/../share/pkgunbox/icon.png";
 	if (!QFileInfo::exists(iconPath)) {
 		iconPath = appDir + "/icon.png";
 	}

@@ -2,6 +2,5 @@
 <RCC version="1.0">
     <qresource>
         <file>styles/dark_theme.qss</file>
-        <file>../../icon.png</file>
     </qresource>
 </RCC>
