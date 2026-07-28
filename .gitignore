@@ -1,4 +1,4 @@
-# PKG Extractor - .gitignore
+# PKGUnbox - .gitignore
 
 # Build artifacts
 extractor/build/CMakeCache.txt
@@ -7,10 +7,10 @@ extractor/build/Makefile
 extractor/build/cmake_install.cmake
 extractor/build/*.o
 extractor/build/*.a
-extractor/build/pkg_extractor
-extractor/build/pkg_extractor_gui
-extractor/build/pkg_extractor_autogen/
-extractor/build/pkg_extractor_gui_autogen/
+extractor/build/pkgunbox
+extractor/build/pkgunbox-gui
+extractor/build/pkgunbox_autogen/
+extractor/build/pkgunbox-gui_autogen/
 extractor/build/cryptopp/
 extractor/build/.qt/
 
