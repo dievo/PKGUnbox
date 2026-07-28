@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=PKGUnbox
+GenericName=PS4 PKG Extractor
+Comment=Extract PS4 .pkg files (base games, updates, DLCs)
+Exec=pkgunbox-gui %f
+Icon=pkgunbox
+Categories=Game;Utility;
+MimeType=application/x-xps4pkg;
+Terminal=false
+StartupNotify=true
+Keywords=PS4;PKG;extractor;playstation;
