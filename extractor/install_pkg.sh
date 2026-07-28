@@ -4,20 +4,20 @@ gamesDir="PATH_TO_GAMES_DIR"
 addonsDir="PATH_TO_ADDONS_DIR"
 
 if [ "$gamesDir" == "PATH_TO_GAMES_DIR" ]; then
-	echo You need to update gamesDir with the games path used by ShadPs4
+	echo You need to update gamesDir with the games path used by PKGUnbox
 	echo "Press [enter] to close"
 	if [ "$2" != "--batch" ]; then read ; fi
 	exit
 fi
 
 if [ "$addonsDir" == "PATH_TO_ADDONS_DIR" ]; then
-	echo You need to update addonsDir with the addons path used by ShadPs4
+	echo You need to update addonsDir with the addons path used by PKGUnbox
 	echo "Press [enter] to close"
 	if [ "$2" != "--batch" ]; then read ; fi
 	exit
 fi
 
-`dirname $0`/pkg_extractor.AppImage "$1" --check-type
+`dirname $0`/pkgunbox.AppImage "$1" --check-type
 
 ret="$?"
 
@@ -33,7 +33,7 @@ else
 		gamesDir=$addonsDir
 	fi
 	
-	`dirname $0`/pkg_extractor.AppImage "$1" $gamesDir
+	`dirname $0`/pkgunbox.AppImage "$1" $gamesDir
 fi
 
 echo "Press [enter] to close"

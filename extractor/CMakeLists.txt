@@ -40,8 +40,8 @@ add_library(libcryptopp STATIC IMPORTED)
 set_property(TARGET libcryptopp PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/cryptopp/cryptopp/libcryptopp.a")
 
 # === Alvo CLI (sempre construído) ===
-add_executable(pkg_extractor main.cpp ${EXTRACTOR_SOURCES})
-target_link_libraries(pkg_extractor PRIVATE libcryptopp ZLIB::ZLIB)
+add_executable(pkgunbox main.cpp ${EXTRACTOR_SOURCES})
+target_link_libraries(pkgunbox PRIVATE libcryptopp ZLIB::ZLIB)
 
 # === Alvo GUI (condicional) ===
 if(BUILD_GUI)
@@ -53,8 +53,8 @@ if(BUILD_GUI)
 		gui/resources/resources.qrc
 	)
 
-	add_executable(pkg_extractor_gui ${GUI_SOURCES} ${EXTRACTOR_SOURCES})
-	target_link_libraries(pkg_extractor_gui PRIVATE
+	add_executable(pkgunbox-gui ${GUI_SOURCES} ${EXTRACTOR_SOURCES})
+	target_link_libraries(pkgunbox-gui PRIVATE
 		Qt6::Widgets Qt6::Core Qt6::Gui
 		libcryptopp ZLIB::ZLIB
 	)

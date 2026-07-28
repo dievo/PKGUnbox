@@ -3,7 +3,7 @@
 
 SettingsManager::SettingsManager(QObject *parent)
 	: QObject(parent)
-	, m_settings(new QSettings("ShadPs4Plus", "PKGExtractor", this))
+	, m_settings(new QSettings("PKGUnbox", "PKGUnbox", this))
 {}
 
 QString SettingsManager::gamesDir() const {

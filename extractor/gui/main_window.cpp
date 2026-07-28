@@ -29,7 +29,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setupUI() {
-	setWindowTitle("PKG Extractor - ShadPs4Plus");
+	setWindowTitle("PKGUnbox");
 	setMinimumSize(700, 520);
 	setAcceptDrops(true);
 

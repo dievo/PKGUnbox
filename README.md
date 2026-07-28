@@ -1,21 +1,62 @@
-# ShadPs4Plus is a standalone PKG extractor based on code that used to be in ShadPS4.
+# PKGUnbox
 
-It has two main parts:
+*"Unbox your PS4 games"*
 
-# pkg_extractor exe / AppImage
+A standalone tool to extract PS4 `.pkg` files — base games, updates, and DLCs.
 
-This is the extractor proper, it is a command line tool.
-The first argument is the path to the pkg file to extract.
-The second argument is where to extract it.
-If no second argument is provided, it will be extracted next to the pkg file.
+## Features
 
-On Windows, you can drag and drop the pkg file onto the exe and it will extract it at the same location.
+- Extract PS4 `.pkg` files (base games, updates, DLCs)
+- Automatic PKG type detection
+- GUI with drag-and-drop support (Qt6)
+- Dark theme (Catppuccin Mocha)
+- Progress bar during extraction
 
-# install_pkg sh / bat
+## CLI Usage
 
-This script has to be edited before use.
-Set the values for gamesDir and addonsDir to the ones used in ShadPS4 (you can check in settings > paths).
+```bash
+# Extract a PKG file
+./pkgunbox /path/to/file.pkg [output_dir]
 
-The first argument is the path to the pkg file to extract.
+# Check PKG type only (returns 101=base, 102=update, 103=DLC)
+./pkgunbox /path/to/file.pkg --check-type
+```
 
-On Windows, you can drag and drop the pkg file onto the bat and it will extract it where it needs to be.
+If no output directory is provided, the PKG is extracted next to the source file.
+
+On Windows, you can drag and drop the `.pkg` file onto the `.exe`.
+
+## GUI Usage
+
+```bash
+./pkgunbox-gui
+```
+
+Or use the wrapper script (fixes Snap/libpthread conflicts):
+
+```bash
+./run_gui.sh
+```
+
+## Install Scripts
+
+The `install_pkg.sh` / `install_pkg.bat` scripts auto-install extracted PKGs into the correct directories.
+
+**Edit the scripts first** — set `gamesDir` and `addonsDir` to your PKGUnbox paths.
+
+## Building
+
+```bash
+cd extractor/build
+git submodule update --init --recursive
+./buildall        # first time: lconf → cryptobuild → lbuild
+
+# Rebuild after code changes
+./lbuild
+```
+
+Requires: CMake >= 3.5, C++23 compiler, Qt6 (for GUI), zlib.
+
+## License
+
+GPL-2.0-or-later

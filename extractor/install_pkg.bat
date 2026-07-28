@@ -6,18 +6,18 @@ set gamesDir="PATH_TO_GAMES_DIR"
 set addonsDir="PATH_TO_ADDONS_DIR"
 
 IF %gamesDir%=="PATH_TO_GAMES_DIR" (
-	echo You need to update gamesDir with the games path used by ShadPs4
+	echo You need to update gamesDir with the games path used by PKGUnbox
 	IF NOT "%par%"=="--batch" pause
 	exit 0
 )
 
 IF %addonsDir%=="PATH_TO_ADDONS_DIR" (
-	echo You need to update addonsDir with the addons path used by ShadPs4
+	echo You need to update addonsDir with the addons path used by PKGUnbox
 	IF NOT "%par%"=="--batch" pause
 	exit 0
 )
 
-%0\..\pkg_extractor.exe %1% --check-type
+%0\..\pkgunbox.exe %1% --check-type
 
 IF %errorlevel%==0 (
 	echo An error has occurred
@@ -35,7 +35,7 @@ IF %errorlevel%==0 (
 		set "gamesDir=%addonsDir%"
 	)
 	
-	%0\..\pkg_extractor.exe %1 !gamesDir!
+	%0\..\pkgunbox.exe %1 !gamesDir!
 )
 
 IF NOT "%par%"=="--batch" pause

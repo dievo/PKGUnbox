@@ -3,8 +3,8 @@
 
 int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
-	app.setApplicationName("PKG Extractor");
-	app.setOrganizationName("ShadPs4Plus");
+	app.setApplicationName("PKGUnbox");
+	app.setOrganizationName("PKGUnbox");
 
 	MainWindow window;
 	window.show();

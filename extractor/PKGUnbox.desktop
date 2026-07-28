@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=PKGUnbox
+Exec=pkgunbox
+Terminal=true
+Type=Application
+Icon=icon
+Comment=Unbox your PS4 games
+Categories=Game;Utility;
+StartupWMClass=pkgunbox;
