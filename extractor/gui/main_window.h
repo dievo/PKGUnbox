@@ -40,7 +40,9 @@ private:
 	void setExtractionActive(bool active);
 	void setFileSelected(const QString &path);
 	void setFileCleared();
-	QIcon getIcon(const QString &name);
+
+	// Icon factory
+	QIcon makeIcon(const QString &type, const QColor &color, const QColor &disabledColor = QColor());
 
 	// Drop zone / file display
 	QWidget *m_dropZone;

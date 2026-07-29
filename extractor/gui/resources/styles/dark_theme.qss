@@ -1,5 +1,5 @@
 /* ============================================
-   PKGUnbox — Discord Dark Theme
+   PKGUnbox — Dark Theme
    ============================================ */
 
 /* === Global === */
@@ -37,23 +37,18 @@ QLabel#dropSubtext {
     font-size: 12px;
 }
 
-/* === Group Boxes === */
-QGroupBox {
-    font-weight: 600;
-    font-size: 12px;
+/* === Directory Container === */
+QWidget#dirContainer {
+    background-color: #2b2d31;
     border: 1px solid #3f4147;
     border-radius: 8px;
-    margin-top: 10px;
-    padding: 16px 10px 10px 10px;
-    color: #b5bac1;
 }
 
-QGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top left;
-    padding: 0 6px;
-    margin-left: 10px;
+QLabel#groupTitle {
     color: #dbdee1;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 0 4px 0;
 }
 
 /* === Line Edits === */
@@ -100,13 +95,14 @@ QPushButton:disabled {
     color: #4e5058;
 }
 
-/* Extract button — Blurple */
+/* Extract button — Primary CTA */
 QPushButton#extractBtn {
     background-color: #5865f2;
     color: #ffffff;
-    font-size: 14px;
-    padding: 8px 24px;
-    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 10px 32px;
+    border-radius: 8px;
 }
 
 QPushButton#extractBtn:hover {
@@ -126,10 +122,29 @@ QPushButton#extractBtn:disabled {
 QPushButton#cancelBtn {
     background-color: #da373c;
     color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 8px;
 }
 
 QPushButton#cancelBtn:hover {
     background-color: #a12d31;
+}
+
+/* Save button — Compact, inline */
+QPushButton#saveBtn {
+    background-color: transparent;
+    color: #9ece6a;
+    border: 1px solid #2a4a2a;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QPushButton#saveBtn:hover {
+    background-color: #1a3a2a;
+    border-color: #9ece6a;
 }
 
 /* Browse buttons */
