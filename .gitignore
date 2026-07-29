@@ -13,11 +13,15 @@ extractor/build/pkgunbox_autogen/
 extractor/build/pkgunbox-gui_autogen/
 extractor/build/cryptopp/
 extractor/build/.qt/
+extractor/build/translations/
 
 # AppImage build
 extractor/build/AppDir/
 extractor/build/*.AppImage
 extractor/build/linuxdeploy-*.AppImage
+
+# Compiled translation files (generated from .ts)
+*.qm
 
 # CMake user presets
 CMakeUserPresets.json
