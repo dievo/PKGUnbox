@@ -21,3 +21,11 @@ QString SettingsManager::addonsDir() const {
 void SettingsManager::setAddonsDir(const QString &dir) {
 	m_settings->setValue("addons_dir", dir);
 }
+
+QString SettingsManager::language() const {
+	return m_settings->value("language", "en").toString();
+}
+
+void SettingsManager::setLanguage(const QString &lang) {
+	m_settings->setValue("language", lang);
+}

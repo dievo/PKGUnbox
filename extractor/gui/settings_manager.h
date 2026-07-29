@@ -15,6 +15,9 @@ public:
 	QString addonsDir() const;
 	void setAddonsDir(const QString &dir);
 
+	QString language() const;
+	void setLanguage(const QString &lang);
+
 private:
 	QSettings *m_settings;
 };

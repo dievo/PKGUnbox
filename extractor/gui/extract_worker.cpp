@@ -12,30 +12,30 @@ ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &destDir, QOb
 void ExtractWorker::run() {
 	QString cliPath = QCoreApplication::applicationDirPath() + "/pkgunbox";
 
-	emit log(QString(">>> Verificando tipo: %1").arg(m_pkgPath));
+	emit log(QString(">>> Checking type: %1").arg(m_pkgPath));
 
 	QProcess checkType;
 	checkType.start(cliPath, {m_pkgPath, "--check-type"});
 	checkType.waitForFinished(60000);
 
 	int ret = checkType.exitCode();
-	emit log(QString("    Código: %1").arg(ret));
+	emit log(QString("    Code: %1").arg(ret));
 
 	if (ret == 0) {
-		emit log("!!! Erro: não é um PKG válido.");
+		emit log("!!! Error: not a valid PKG.");
 		emit finished(-1);
 		return;
 	}
 
 	if (ret == 101) {
-		emit log(">>> Tipo: Jogo base");
+		emit log(">>> Type: Base game");
 	} else if (ret == 102) {
-		emit log(">>> Tipo: Atualização");
+		emit log(">>> Type: Update");
 	} else if (ret == 103) {
-		emit log(">>> Tipo: DLC");
+		emit log(">>> Type: DLC");
 	}
 
-	emit log(QString(">>> Extraindo para: %1").arg(m_destDir));
+	emit log(QString(">>> Extracting to: %1").arg(m_destDir));
 
 	QProcess extract;
 	extract.setProcessChannelMode(QProcess::MergedChannels);
@@ -96,9 +96,9 @@ void ExtractWorker::run() {
 	int finalRet = extract.exitCode();
 
 	if (finalRet == 0) {
-		emit log(">>> Extração concluída com sucesso!");
+		emit log(">>> Extraction completed successfully!");
 	} else {
-		emit log(QString("!!! Erro (código %1)").arg(finalRet));
+		emit log(QString("!!! Error (code %1)").arg(finalRet));
 	}
 
 	emit finished(finalRet);

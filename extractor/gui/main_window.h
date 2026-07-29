@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QFrame>
+#include <QComboBox>
 #include "extract_worker.h"
 #include "settings_manager.h"
 
@@ -33,6 +34,7 @@ private slots:
 	void onExtractionLog(const QString &message);
 	void onExtractionProgress(int current, int total);
 	void onExtractionFinished(int returnCode);
+	void onLanguageChanged(int index);
 
 private:
 	void setupUI();
@@ -40,6 +42,7 @@ private:
 	void setExtractionActive(bool active);
 	void setFileSelected(const QString &path);
 	void setFileCleared();
+	void retranslateUI();
 
 	// Icon factory
 	QIcon makeIcon(const QString &type, const QColor &color, const QColor &disabledColor = QColor());
@@ -66,6 +69,14 @@ private:
 	QLabel *m_statusLabel;
 	QProgressBar *m_progressBar;
 
+	// Labels needing retranslation
+	QLabel *m_dirTitleLabel;
+	QLabel *m_lblGames;
+	QLabel *m_lblAddons;
+	QLabel *m_logTitleLabel;
+	QLabel *m_langLabel;
+
 	ExtractWorker *m_worker;
 	SettingsManager *m_settings;
+	QComboBox *m_languageCombo;
 };

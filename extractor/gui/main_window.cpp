@@ -14,6 +14,7 @@
 #include <QSizePolicy>
 #include <QPainter>
 #include <QPainterPath>
+#include <QTranslator>
 #include <cmath>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -181,12 +182,12 @@ void MainWindow::setupUI() {
 	m_dropIcon->setAlignment(Qt::AlignCenter);
 	dropLayout->addWidget(m_dropIcon);
 
-	m_dropText = new QLabel("Arraste um arquivo .pkg aqui");
+	m_dropText = new QLabel(tr("Drag a .pkg file here"));
 	m_dropText->setObjectName("dropText");
 	m_dropText->setAlignment(Qt::AlignCenter);
 	dropLayout->addWidget(m_dropText);
 
-	m_dropSubtext = new QLabel("ou clique para selecionar");
+	m_dropSubtext = new QLabel(tr("or click to browse"));
 	m_dropSubtext->setObjectName("dropSubtext");
 	m_dropSubtext->setAlignment(Qt::AlignCenter);
 	dropLayout->addWidget(m_dropSubtext);
@@ -205,21 +206,21 @@ void MainWindow::setupUI() {
 	m_fileInput = new QLineEdit();
 	m_fileInput->setReadOnly(true);
 	m_fileInput->setMinimumHeight(32);
-	m_fileInput->setPlaceholderText("Nenhum arquivo selecionado");
+	m_fileInput->setPlaceholderText(tr("No file selected"));
 	fileRow->addWidget(m_fileInput, 1);
 
 	m_clearFileBtn = new QPushButton();
 	m_clearFileBtn->setIcon(makeIcon("cancel", colCancel));
 	m_clearFileBtn->setObjectName("clearFileBtn");
 	m_clearFileBtn->setFixedSize(28, 28);
-	m_clearFileBtn->setToolTip("Limpar arquivo selecionado");
+	m_clearFileBtn->setToolTip(tr("Clear selected file"));
 	connect(m_clearFileBtn, &QPushButton::clicked, this, &MainWindow::onClearFile);
 	fileRow->addWidget(m_clearFileBtn, 0);
 
 	mainLayout->addWidget(m_fileDisplay);
 
 	// ========================================
-	// === Diretorios de Destino + Salvar
+	// === Destination Directories + Save
 	// ========================================
 	auto *dirContainer = new QWidget();
 	dirContainer->setObjectName("dirContainer");
@@ -230,17 +231,18 @@ void MainWindow::setupUI() {
 	// Title bar with Save button
 	auto *dirTitleBar = new QHBoxLayout();
 	dirTitleBar->setContentsMargins(10, 6, 10, 2);
-	auto *dirTitleLabel = new QLabel("Destino");
+	auto *dirTitleLabel = new QLabel(tr("Destination"));
 	dirTitleLabel->setObjectName("groupTitle");
+	m_dirTitleLabel = dirTitleLabel;
 	dirTitleBar->addWidget(dirTitleLabel);
 	dirTitleBar->addStretch();
 
 	m_saveBtn = new QPushButton();
 	m_saveBtn->setIcon(makeIcon("settings", colSave));
-	m_saveBtn->setText("Salvar");
+	m_saveBtn->setText(tr("Save"));
 	m_saveBtn->setObjectName("saveBtn");
 	m_saveBtn->setFixedHeight(24);
-	m_saveBtn->setToolTip("Salvar as configuracoes de destino");
+	m_saveBtn->setToolTip(tr("Save destination settings"));
 	connect(m_saveBtn, &QPushButton::clicked, this, &MainWindow::onSaveSettings);
 	dirTitleBar->addWidget(m_saveBtn);
 
@@ -252,8 +254,9 @@ void MainWindow::setupUI() {
 	dirGrid->setContentsMargins(10, 4, 10, 10);
 
 	// Games directory
-	auto *lblGames = new QLabel("Jogos:");
+	auto *lblGames = new QLabel(tr("Games:"));
 	lblGames->setFixedWidth(55);
+	m_lblGames = lblGames;
 	dirGrid->addWidget(lblGames, 0, 0);
 
 	m_gamesDirInput = new QLineEdit();
@@ -264,13 +267,14 @@ void MainWindow::setupUI() {
 	m_selectGamesDirBtn->setIcon(makeIcon("folder", colGames));
 	m_selectGamesDirBtn->setObjectName("browseBtn");
 	m_selectGamesDirBtn->setFixedSize(30, 30);
-	m_selectGamesDirBtn->setToolTip("Selecionar diretorio de jogos");
+	m_selectGamesDirBtn->setToolTip(tr("Select games directory"));
 	connect(m_selectGamesDirBtn, &QPushButton::clicked, this, &MainWindow::onSelectGamesDir);
 	dirGrid->addWidget(m_selectGamesDirBtn, 0, 2);
 
 	// Addons directory
-	auto *lblAddons = new QLabel("DLCs:");
+	auto *lblAddons = new QLabel(tr("DLCs:"));
 	lblAddons->setFixedWidth(55);
+	m_lblAddons = lblAddons;
 	dirGrid->addWidget(lblAddons, 1, 0);
 
 	m_addonsDirInput = new QLineEdit();
@@ -281,7 +285,7 @@ void MainWindow::setupUI() {
 	m_selectAddonsDirBtn->setIcon(makeIcon("folder", colAddons));
 	m_selectAddonsDirBtn->setObjectName("browseBtn");
 	m_selectAddonsDirBtn->setFixedSize(30, 30);
-	m_selectAddonsDirBtn->setToolTip("Selecionar diretorio de DLCs/Updates");
+	m_selectAddonsDirBtn->setToolTip(tr("Select DLCs/Updates directory"));
 	connect(m_selectAddonsDirBtn, &QPushButton::clicked, this, &MainWindow::onSelectAddonsDir);
 	dirGrid->addWidget(m_selectAddonsDirBtn, 1, 2);
 
@@ -296,17 +300,17 @@ void MainWindow::setupUI() {
 
 	m_extractBtn = new QPushButton();
 	m_extractBtn->setIcon(makeIcon("box", QColor("#ffffff")));
-	m_extractBtn->setText("Extrair");
+	m_extractBtn->setText(tr("Extract"));
 	m_extractBtn->setObjectName("extractBtn");
 	m_extractBtn->setMinimumSize(160, 40);
 	m_extractBtn->setEnabled(false);
-	m_extractBtn->setToolTip("Iniciar extracao do PKG");
+	m_extractBtn->setToolTip(tr("Start PKG extraction"));
 	connect(m_extractBtn, &QPushButton::clicked, this, &MainWindow::onStartExtraction);
 	extractLayout->addWidget(m_extractBtn);
 
 	m_cancelBtn = new QPushButton();
 	m_cancelBtn->setIcon(makeIcon("cancel", colCancel));
-	m_cancelBtn->setText("Cancelar");
+	m_cancelBtn->setText(tr("Cancel"));
 	m_cancelBtn->setObjectName("cancelBtn");
 	m_cancelBtn->setMinimumSize(140, 40);
 	m_cancelBtn->hide();
@@ -337,27 +341,60 @@ void MainWindow::setupUI() {
 	// ========================================
 	// === Log (always visible, fills remaining space)
 	// ========================================
-	auto *logLabel = new QLabel("Log");
+	auto *logLabel = new QLabel(tr("Log"));
 	logLabel->setObjectName("logLabel");
+	m_logTitleLabel = logLabel;
 	mainLayout->addWidget(logLabel);
 
 	m_logArea = new QTextEdit();
 	m_logArea->setReadOnly(true);
-	m_logArea->setPlaceholderText("Aguardando operacao...");
+	m_logArea->setPlaceholderText(tr("Waiting for operation..."));
 	m_logArea->setMinimumHeight(80);
 	mainLayout->addWidget(m_logArea, 1);
 
 	// ========================================
 	// === Status Label
 	// ========================================
-	m_statusLabel = new QLabel("Pronto");
+	m_statusLabel = new QLabel(tr("Ready"));
 	m_statusLabel->setObjectName("statusLabel");
 	mainLayout->addWidget(m_statusLabel);
+
+	// ========================================
+	// === Language Selector
+	// ========================================
+	auto *langLayout = new QHBoxLayout();
+	langLayout->setContentsMargins(0, 0, 0, 0);
+
+	auto *langLabel = new QLabel(tr("Language:"));
+	langLabel->setObjectName("langLabel");
+	m_langLabel = langLabel;
+	langLayout->addWidget(langLabel);
+
+	m_languageCombo = new QComboBox();
+	m_languageCombo->addItem("English", "en");
+	m_languageCombo->addItem("Portugues (BR)", "pt_BR");
+	m_languageCombo->addItem("Espanol", "es");
+	m_languageCombo->setFixedWidth(140);
+	connect(m_languageCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+	        this, &MainWindow::onLanguageChanged);
+	langLayout->addWidget(m_languageCombo);
+	langLayout->addStretch();
+
+	mainLayout->addLayout(langLayout);
 }
 
 void MainWindow::loadSettings() {
 	m_gamesDirInput->setText(m_settings->gamesDir());
 	m_addonsDirInput->setText(m_settings->addonsDir());
+
+	// Load saved language
+	QString savedLang = m_settings->language();
+	if (!savedLang.isEmpty()) {
+		int idx = m_languageCombo->findData(savedLang);
+		if (idx >= 0) {
+			m_languageCombo->setCurrentIndex(idx);
+		}
+	}
 }
 
 void MainWindow::setExtractionActive(bool active) {
@@ -380,7 +417,7 @@ void MainWindow::setFileSelected(const QString &path) {
 	m_fileDisplay->setVisible(true);
 	m_dropZone->setVisible(false);
 	m_extractBtn->setEnabled(true);
-	m_statusLabel->setText(QString("Arquivo: %1").arg(QFileInfo(path).fileName()));
+	m_statusLabel->setText(tr("File: %1").arg(QFileInfo(path).fileName()));
 }
 
 void MainWindow::setFileCleared() {
@@ -388,7 +425,7 @@ void MainWindow::setFileCleared() {
 	m_fileDisplay->setVisible(false);
 	m_dropZone->setVisible(true);
 	m_extractBtn->setEnabled(false);
-	m_statusLabel->setText("Pronto");
+	m_statusLabel->setText(tr("Ready"));
 	m_progressBar->setValue(0);
 }
 
@@ -398,8 +435,8 @@ void MainWindow::setFileCleared() {
 
 void MainWindow::onSelectFile() {
 	QString path = QFileDialog::getOpenFileName(
-		this, "Selecionar arquivo PKG", "",
-		"Arquivos PKG (*.pkg);;Todos os arquivos (*)"
+		this, tr("Select PKG file"), "",
+		tr("PKG files (*.pkg);;All files (*)")
 	);
 	if (!path.isEmpty()) {
 		setFileSelected(path);
@@ -412,7 +449,7 @@ void MainWindow::onClearFile() {
 
 void MainWindow::onSelectGamesDir() {
 	QString dir = QFileDialog::getExistingDirectory(
-		this, "Selecionar diretorio de jogos", m_gamesDirInput->text()
+		this, tr("Select games directory"), m_gamesDirInput->text()
 	);
 	if (!dir.isEmpty()) {
 		m_gamesDirInput->setText(dir);
@@ -421,7 +458,7 @@ void MainWindow::onSelectGamesDir() {
 
 void MainWindow::onSelectAddonsDir() {
 	QString dir = QFileDialog::getExistingDirectory(
-		this, "Selecionar diretorio de DLCs/Updates", m_addonsDirInput->text()
+		this, tr("Select DLCs/Updates directory"), m_addonsDirInput->text()
 	);
 	if (!dir.isEmpty()) {
 		m_addonsDirInput->setText(dir);
@@ -435,21 +472,21 @@ void MainWindow::onSelectAddonsDir() {
 void MainWindow::onStartExtraction() {
 	QString pkgPath = m_fileInput->text();
 	if (pkgPath.isEmpty()) {
-		QMessageBox::warning(this, "Aviso", "Selecione um arquivo PKG.");
+		QMessageBox::warning(this, tr("Warning"), tr("Please select a PKG file."));
 		return;
 	}
 
 	QString gamesDir = m_gamesDirInput->text();
 	if (gamesDir.isEmpty()) {
-		QMessageBox::warning(this, "Aviso", "Configure o diretorio de jogos.");
+		QMessageBox::warning(this, tr("Warning"), tr("Please configure the games directory."));
 		return;
 	}
 
 	setExtractionActive(true);
 
 	m_logArea->append("======================================");
-	m_logArea->append(QString("Iniciando: %1").arg(QFileInfo(pkgPath).fileName()));
-	m_logArea->append(QString("Destino:   %1").arg(gamesDir));
+	m_logArea->append(QString(tr("Starting: %1")).arg(QFileInfo(pkgPath).fileName()));
+	m_logArea->append(QString(tr("Destination: %1")).arg(gamesDir));
 	m_logArea->append("======================================");
 
 	m_worker = new ExtractWorker(pkgPath, gamesDir, this);
@@ -461,15 +498,15 @@ void MainWindow::onStartExtraction() {
 
 void MainWindow::onCancelExtraction() {
 	if (m_worker && m_worker->isRunning()) {
-		m_logArea->append("\nCancelando...");
+		m_logArea->append(tr("\nCanceling..."));
 		m_worker->quit();
 		if (!m_worker->wait(3000)) {
 			m_worker->terminate();
 			m_worker->wait(1000);
 		}
-		m_logArea->append("Cancelado pelo usuario.");
+		m_logArea->append(tr("Canceled by user."));
 		setExtractionActive(false);
-		m_statusLabel->setText("Cancelado");
+		m_statusLabel->setText(tr("Canceled"));
 	}
 }
 
@@ -493,11 +530,11 @@ void MainWindow::onExtractionFinished(int returnCode) {
 
 	if (returnCode == 0) {
 		m_progressBar->setValue(100);
-		m_logArea->append("Concluido com sucesso!");
-		m_statusLabel->setText("Concluido!");
+		m_logArea->append(tr("Completed successfully!"));
+		m_statusLabel->setText(tr("Done!"));
 	} else {
-		m_logArea->append(QString("Erro (codigo %1)").arg(returnCode));
-		m_statusLabel->setText(QString("Falha (codigo %1)").arg(returnCode));
+		m_logArea->append(QString(tr("Error (code %1)")).arg(returnCode));
+		m_statusLabel->setText(QString(tr("Failed (code %1)")).arg(returnCode));
 	}
 
 	m_logArea->append("======================================");
@@ -511,7 +548,79 @@ void MainWindow::onExtractionFinished(int returnCode) {
 void MainWindow::onSaveSettings() {
 	m_settings->setGamesDir(m_gamesDirInput->text());
 	m_settings->setAddonsDir(m_addonsDirInput->text());
-	m_statusLabel->setText("Configuracoes salvas!");
+	m_settings->setLanguage(m_languageCombo->currentData().toString());
+	m_statusLabel->setText(tr("Settings saved!"));
+}
+
+// ========================================
+// === Language
+// ========================================
+
+void MainWindow::onLanguageChanged(int index) {
+	QString lang = m_languageCombo->itemData(index).toString();
+	m_settings->setLanguage(lang);
+
+	static QTranslator *translator = nullptr;
+	if (!translator) {
+		translator = new QTranslator(qApp);
+	}
+
+	// Remove previous translation
+	qApp->removeTranslator(translator);
+
+	// Load new translation
+	QString qmPath = QApplication::applicationDirPath() + "/../share/pkgunbox/translations";
+	if (!QFileInfo::exists(qmPath)) {
+		qmPath = QApplication::applicationDirPath() + "/translations";
+	}
+
+	QString qmFile = qmPath + "/pkgunbox_" + lang + ".qm";
+	if (lang == "en") {
+		// English is the source language — no translation needed
+		retranslateUI();
+		return;
+	}
+
+	if (translator->load(qmFile)) {
+		qApp->installTranslator(translator);
+	} else {
+		// Fallback: try from resources
+		if (translator->load(":/translations/pkgunbox_" + lang)) {
+			qApp->installTranslator(translator);
+		}
+	}
+
+	retranslateUI();
+}
+
+void MainWindow::retranslateUI() {
+	setWindowTitle(tr("PKGUnbox"));
+	m_dropText->setText(tr("Drag a .pkg file here"));
+	m_dropSubtext->setText(tr("or click to browse"));
+	m_fileInput->setPlaceholderText(tr("No file selected"));
+	m_clearFileBtn->setToolTip(tr("Clear selected file"));
+
+	// Dir section
+	m_dirTitleLabel->setText(tr("Destination"));
+	m_lblGames->setText(tr("Games:"));
+	m_lblAddons->setText(tr("DLCs:"));
+	m_saveBtn->setText(tr("Save"));
+	m_saveBtn->setToolTip(tr("Save destination settings"));
+	m_selectGamesDirBtn->setToolTip(tr("Select games directory"));
+	m_selectAddonsDirBtn->setToolTip(tr("Select DLCs/Updates directory"));
+
+	m_extractBtn->setText(tr("Extract"));
+	m_extractBtn->setToolTip(tr("Start PKG extraction"));
+	m_cancelBtn->setText(tr("Cancel"));
+
+	m_logTitleLabel->setText(tr("Log"));
+	m_langLabel->setText(tr("Language:"));
+	m_logArea->setPlaceholderText(tr("Waiting for operation..."));
+
+	// Update status if ready
+	if (!m_extractBtn->isEnabled() && !m_worker) {
+		m_statusLabel->setText(tr("Ready"));
+	}
 }
 
 // ========================================
