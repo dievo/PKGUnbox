@@ -1,61 +1,249 @@
+/* ============================================
+   PKGUnbox — Discord Dark Theme
+   ============================================ */
+
+/* === Global === */
+QWidget {
+    background-color: #313338;
+    color: #dbdee1;
+    font-family: 'gg sans', 'Noto Sans', 'Ubuntu', sans-serif;
+    font-size: 14px;
+}
+
 QMainWindow {
-	background-color: #181825;
+    background-color: #313338;
 }
 
+/* === Drop Zone === */
+QWidget#dropZone {
+    background-color: #2b2d31;
+    border: 2px dashed #4e5058;
+    border-radius: 10px;
+}
+
+QWidget#dropZone:hover {
+    border-color: #5865f2;
+    background-color: #2f3136;
+}
+
+QLabel#dropText {
+    color: #dbdee1;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+QLabel#dropSubtext {
+    color: #949ba4;
+    font-size: 12px;
+}
+
+/* === Group Boxes === */
 QGroupBox {
-	font-weight: bold;
-	border: 1px solid #45475a;
-	border-radius: 6px;
-	margin-top: 10px;
-	padding-top: 14px;
-	color: #cdd6f4;
+    font-weight: 600;
+    font-size: 12px;
+    border: 1px solid #3f4147;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 16px 10px 10px 10px;
+    color: #b5bac1;
 }
 
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 6px;
+    margin-left: 10px;
+    color: #dbdee1;
+}
+
+/* === Line Edits === */
 QLineEdit {
-	background-color: #313244;
-	color: #cdd6f4;
-	border: 1px solid #45475a;
-	border-radius: 4px;
-	padding: 6px;
+    background-color: #1e1f22;
+    color: #dbdee1;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    selection-background-color: #5865f2;
+    selection-color: #ffffff;
 }
 
+QLineEdit:focus {
+    background-color: #1a1b1e;
+    border: 1px solid #5865f2;
+}
+
+QLineEdit:read-only {
+    background-color: #2b2d31;
+    color: #949ba4;
+}
+
+/* === Buttons === */
 QPushButton {
-	background-color: #313244;
-	color: #cdd6f4;
-	border: 1px solid #45475a;
-	border-radius: 4px;
-	padding: 6px 12px;
+    background-color: #4e5058;
+    color: #dbdee1;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-weight: 600;
 }
 
 QPushButton:hover {
-	background-color: #45475a;
+    background-color: #6d6f78;
 }
 
+QPushButton:pressed {
+    background-color: #3e4046;
+}
+
+QPushButton:disabled {
+    background-color: #2b2d31;
+    color: #4e5058;
+}
+
+/* Extract button — Blurple */
+QPushButton#extractBtn {
+    background-color: #5865f2;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 8px 24px;
+    border-radius: 6px;
+}
+
+QPushButton#extractBtn:hover {
+    background-color: #4752c4;
+}
+
+QPushButton#extractBtn:pressed {
+    background-color: #3c45a5;
+}
+
+QPushButton#extractBtn:disabled {
+    background-color: #2b2d31;
+    color: #4e5058;
+}
+
+/* Cancel button — Red */
+QPushButton#cancelBtn {
+    background-color: #da373c;
+    color: #ffffff;
+}
+
+QPushButton#cancelBtn:hover {
+    background-color: #a12d31;
+}
+
+/* Browse buttons */
+QPushButton#browseBtn {
+    background-color: #4e5058;
+    color: #dbdee1;
+    padding: 4px;
+}
+
+QPushButton#browseBtn:hover {
+    background-color: #6d6f78;
+}
+
+/* Clear file button */
+QPushButton#clearFileBtn {
+    background-color: #da373c;
+    color: #ffffff;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+QPushButton#clearFileBtn:hover {
+    background-color: #a12d31;
+}
+
+/* === Log Label === */
+QLabel#logLabel {
+    color: #949ba4;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 0;
+}
+
+/* === Text Edit (Log) === */
 QTextEdit {
-	background-color: #1e1e2e;
-	color: #cdd6f4;
-	border: 1px solid #45475a;
-	border-radius: 4px;
+    background-color: #2b2d31;
+    color: #dbdee1;
+    border: 1px solid #3f4147;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: 'Consolas', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 12px;
+    selection-background-color: #5865f2;
 }
 
+/* === Scrollbar === */
+QScrollBar:vertical {
+    background-color: transparent;
+    width: 6px;
+    margin: 0;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #1a1b1e;
+    border-radius: 3px;
+    min-height: 30px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #4e5058;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+    background: none;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* === Progress Bar === */
 QProgressBar {
-	border: 1px solid #45475a;
-	border-radius: 4px;
-	text-align: center;
-	color: #cdd6f4;
-	background-color: #313244;
+    border: 1px solid #3f4147;
+    border-radius: 4px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #2b2d31;
+    font-weight: 600;
+    font-size: 11px;
 }
 
 QProgressBar::chunk {
-	background-color: #89b4fa;
-	border-radius: 3px;
+    background-color: #5865f2;
+    border-radius: 3px;
 }
 
+/* === Labels === */
 QLabel {
-	color: #cdd6f4;
+    color: #dbdee1;
+    background: transparent;
 }
 
-QWidget {
-	background-color: #181825;
-	color: #cdd6f4;
+QLabel#statusLabel {
+    color: #949ba4;
+    font-size: 11px;
+    padding: 2px 0;
+}
+
+/* === Tool Tips === */
+QToolTip {
+    background-color: #111214;
+    color: #dbdee1;
+    border: 1px solid #3f4147;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+/* === Frame separators === */
+QFrame[frameShape="4"],
+QFrame[frameShape="5"] {
+    color: #3f4147;
 }

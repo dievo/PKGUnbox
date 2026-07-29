@@ -2,5 +2,13 @@
 <RCC version="1.0">
     <qresource>
         <file>styles/dark_theme.qss</file>
+        <file>icons/folder.svg</file>
+        <file>icons/download.svg</file>
+        <file>icons/box.svg</file>
+        <file>icons/save.svg</file>
+        <file>icons/cancel.svg</file>
+        <file>icons/check.svg</file>
+        <file>icons/file.svg</file>
+        <file>icons/info.svg</file>
     </qresource>
 </RCC>
