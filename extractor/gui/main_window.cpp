@@ -212,7 +212,7 @@ void MainWindow::setupUI() {
 	fileRow->addWidget(m_fileInput, 1);
 
 	m_clearFileBtn = new QPushButton();
-	m_clearFileBtn->setIcon(makeIcon("cancel", colCancel));
+	m_clearFileBtn->setIcon(makeIcon("cancel", QColor("#ffffff")));
 	m_clearFileBtn->setObjectName("clearFileBtn");
 	m_clearFileBtn->setFixedSize(28, 28);
 	m_clearFileBtn->setToolTip(tr("Clear selected file"));
