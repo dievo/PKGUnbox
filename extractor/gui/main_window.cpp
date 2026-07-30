@@ -153,10 +153,10 @@ void MainWindow::setupUI() {
 
 	// Color palette
 	QColor colFile("#7aa2f7");       // Blue — file/drop zone
-	QColor colGames("#9ece6a");      // Green — games
+	QColor colGames("#22c55e");      // Green — games
 	QColor colAddons("#bb9af7");     // Purple — addons/DLCs
 	QColor colExtract("#5865f2");    // Blurple — extract (primary)
-	QColor colSave("#9ece6a");       // Green — save (positive)
+	QColor colSave("#22c55e");       // Green — save (positive)
 	QColor colCancel("#f7768e");     // Red — cancel/danger
 
 	auto *central = new QWidget(this);
@@ -409,6 +409,9 @@ void MainWindow::setExtractionActive(bool active) {
 
 	if (active) {
 		m_progressBar->setValue(0);
+		m_progressBar->setProperty("complete", false);
+		m_progressBar->style()->unpolish(m_progressBar);
+		m_progressBar->style()->polish(m_progressBar);
 		m_logArea->clear();
 	}
 }
@@ -428,6 +431,9 @@ void MainWindow::setFileCleared() {
 	m_extractBtn->setEnabled(false);
 	m_statusLabel->setText(tr("Ready"));
 	m_progressBar->setValue(0);
+	m_progressBar->setProperty("complete", false);
+	m_progressBar->style()->unpolish(m_progressBar);
+	m_progressBar->style()->polish(m_progressBar);
 }
 
 // ========================================
@@ -521,6 +527,9 @@ void MainWindow::onExtractionProgress(int current, int total) {
 	if (total > 0) {
 		int percent = static_cast<int>((static_cast<double>(current) / total) * 100);
 		m_progressBar->setValue(percent);
+		m_progressBar->setProperty("complete", percent >= 100);
+		m_progressBar->style()->unpolish(m_progressBar);
+		m_progressBar->style()->polish(m_progressBar);
 		m_statusLabel->setText(QString("%1 / %2 (%3%)").arg(current).arg(total).arg(percent));
 	}
 }
@@ -531,6 +540,9 @@ void MainWindow::onExtractionFinished(int returnCode) {
 
 	if (returnCode == 0) {
 		m_progressBar->setValue(100);
+		m_progressBar->setProperty("complete", true);
+		m_progressBar->style()->unpolish(m_progressBar);
+		m_progressBar->style()->polish(m_progressBar);
 		m_logArea->append(tr("Completed successfully!"));
 		m_statusLabel->setText(tr("Done!"));
 	} else {

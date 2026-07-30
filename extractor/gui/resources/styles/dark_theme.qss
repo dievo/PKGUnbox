@@ -134,8 +134,8 @@ QPushButton#cancelBtn:hover {
 /* Save button — Compact, inline */
 QPushButton#saveBtn {
     background-color: transparent;
-    color: #9ece6a;
-    border: 1px solid #2a4a2a;
+    color: #22c55e;
+    border: 1px solid #166534;
     border-radius: 4px;
     padding: 4px 12px;
     font-size: 11px;
@@ -143,8 +143,13 @@ QPushButton#saveBtn {
 }
 
 QPushButton#saveBtn:hover {
-    background-color: #1a3a2a;
-    border-color: #9ece6a;
+    background-color: #14532d;
+    border-color: #22c55e;
+}
+
+QPushButton#saveBtn:disabled {
+    color: #4e5058;
+    border: 1px solid #3f4147;
 }
 
 /* Browse buttons */
@@ -232,6 +237,15 @@ QProgressBar {
 
 QProgressBar::chunk {
     background-color: #5865f2;
+    border-radius: 3px;
+}
+
+QProgressBar[complete="true"] {
+    color: #1a1b1e;
+}
+
+QProgressBar[complete="true"]::chunk {
+    background-color: #22c55e;
     border-radius: 3px;
 }
 
