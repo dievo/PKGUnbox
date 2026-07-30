@@ -502,8 +502,8 @@ void MainWindow::onStartExtraction() {
 	setExtractionActive(true);
 
 	m_logArea->append("======================================");
-	m_logArea->append(QString(tr("Starting: %1")).arg(QFileInfo(pkgPath).fileName()));
-	m_logArea->append(QString(tr("Destination: %1")).arg(gamesDir));
+	m_logArea->append(QString("Starting: %1").arg(QFileInfo(pkgPath).fileName()));
+	m_logArea->append(QString("Destination: %1").arg(gamesDir));
 	m_logArea->append("======================================");
 
 	m_worker = new ExtractWorker(pkgPath, gamesDir, m_addonsDirInput->text(), this);
@@ -515,13 +515,13 @@ void MainWindow::onStartExtraction() {
 
 void MainWindow::onCancelExtraction() {
 	if (m_worker && m_worker->isRunning()) {
-		m_logArea->append(tr("\nCanceling..."));
+		m_logArea->append("\nCanceling...");
 		m_worker->quit();
 		if (!m_worker->wait(3000)) {
 			m_worker->terminate();
 			m_worker->wait(1000);
 		}
-		m_logArea->append(tr("Canceled by user."));
+		m_logArea->append("Canceled by user.");
 		setExtractionActive(false);
 		m_statusLabel->setText(tr("Canceled"));
 	}
@@ -559,10 +559,10 @@ void MainWindow::onExtractionFinished(int returnCode) {
 		m_progressBar->setProperty("complete", true);
 		m_progressBar->style()->unpolish(m_progressBar);
 		m_progressBar->style()->polish(m_progressBar);
-		m_logArea->append(tr("Completed successfully!"));
+		m_logArea->append("Completed successfully!");
 		m_statusLabel->setText(tr("Done!"));
 	} else {
-		m_logArea->append(QString(tr("Error (code %1)")).arg(returnCode));
+		m_logArea->append(QString("Error (code %1)").arg(returnCode));
 		m_statusLabel->setText(QString(tr("Failed (code %1)")).arg(returnCode));
 	}
 
