@@ -15,6 +15,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QTranslator>
+#include <QDebug>
 #include <cmath>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -556,6 +557,27 @@ void MainWindow::onSaveSettings() {
 // === Language
 // ========================================
 
+static QString findTranslationsDir() {
+	QString appDir = QApplication::applicationDirPath();
+
+	// Possible locations (in priority order):
+	// 1. Installed/AppImage: <appDir>/../share/pkgunbox/translations/
+	// 2. Dev build (flat):   <appDir>/translations/
+	// 3. Alongside binary:   <appDir>/pkgunbox_translations/ (portable)
+	QStringList candidates = {
+		appDir + "/../share/pkgunbox/translations",
+		appDir + "/translations",
+		appDir + "/pkgunbox_translations",
+	};
+
+	for (const QString &path : candidates) {
+		if (QFileInfo::exists(path)) {
+			return path;
+		}
+	}
+	return {};
+}
+
 void MainWindow::onLanguageChanged(int index) {
 	QString lang = m_languageCombo->itemData(index).toString();
 	m_settings->setLanguage(lang);
@@ -568,25 +590,31 @@ void MainWindow::onLanguageChanged(int index) {
 	// Remove previous translation
 	qApp->removeTranslator(translator);
 
-	// Load new translation
-	QString qmPath = QApplication::applicationDirPath() + "/../share/pkgunbox/translations";
-	if (!QFileInfo::exists(qmPath)) {
-		qmPath = QApplication::applicationDirPath() + "/translations";
-	}
-
-	QString qmFile = qmPath + "/pkgunbox_" + lang + ".qm";
+	// English is the source language — no translation needed
 	if (lang == "en") {
-		// English is the source language — no translation needed
 		retranslateUI();
 		return;
 	}
 
+	// Find translations directory
+	QString qmPath = findTranslationsDir();
+	if (qmPath.isEmpty()) {
+		qWarning() << "Translations directory not found";
+		retranslateUI();
+		return;
+	}
+
+	QString qmFile = qmPath + "/pkgunbox_" + lang + ".qm";
+
+	// Try loading from filesystem
 	if (translator->load(qmFile)) {
 		qApp->installTranslator(translator);
 	} else {
-		// Fallback: try from resources
+		// Fallback: try from Qt resources (embedded in binary)
 		if (translator->load(":/translations/pkgunbox_" + lang)) {
 			qApp->installTranslator(translator);
+		} else {
+			qWarning() << "Failed to load translation:" << qmFile;
 		}
 	}
 

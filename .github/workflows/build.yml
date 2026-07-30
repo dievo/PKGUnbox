@@ -1,0 +1,163 @@
+name: Build PKGUnbox
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            zlib1g-dev \
+            qt6-base-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools \
+            qt6-l10n-tools \
+            libgl1-mesa-dev \
+            python3-pil \
+            wget \
+            file
+
+      - name: Build Crypto++ library
+        run: |
+          cd PKGUnbox/externals/cryptopp
+          make -j$(nproc)
+
+      - name: Configure CMake
+        run: |
+          cd PKGUnbox/extractor/build
+          cmake --fresh .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=ON \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_CXX_COMPILER=g++
+
+      - name: Build
+        run: |
+          cd PKGUnbox/extractor/build
+          cmake --build . --config Release -j$(nproc)
+
+      - name: Verify binaries
+        run: |
+          cd PKGUnbox/extractor/build
+          echo "=== CLI ==="
+          file ./pkgunbox
+          ./pkgunbox --help || true
+          echo ""
+          echo "=== GUI ==="
+          file ./pkgunbox-gui
+
+      - name: Download linuxdeploy tools
+        run: |
+          cd PKGUnbox/extractor/build
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-*.AppImage
+
+      - name: Create AppDir structure
+        run: |
+          cd PKGUnbox/extractor/build
+          rm -rf AppDir
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/pkgunbox/translations
+
+          # Binaries
+          cp pkgunbox AppDir/usr/bin/
+          cp pkgunbox-gui AppDir/usr/bin/
+
+          # Translations (.qm files)
+          if ls translations/pkgunbox_*.qm 1>/dev/null 2>&1; then
+            cp translations/pkgunbox_*.qm AppDir/usr/share/pkgunbox/translations/
+            echo "Copied $(ls AppDir/usr/share/pkgunbox/translations/pkgunbox_*.qm | wc -l) translation files"
+          else
+            echo "WARNING: No .qm files found"
+          fi
+
+          # Desktop file
+          cp ../pkgunbox.desktop AppDir/usr/share/applications/
+
+          # Icon (resize 1024->512)
+          python3 -c "
+          from PIL import Image
+          img = Image.open('../icon.png')
+          img_resized = img.resize((512, 512), Image.LANCZOS)
+          img_resized.save('AppDir/usr/share/icons/hicolor/512x512/apps/pkgunbox.png')
+          print('Icon resized: 1024x1024 -> 512x512')
+          "
+
+          # AppRun symlink
+          ln -sf usr/bin/pkgunbox-gui AppDir/AppRun
+
+      - name: Build AppImage
+        run: |
+          cd PKGUnbox/extractor/build
+          export DEPLOY_GTK_VERSION=3
+          ./linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --desktop-file AppDir/usr/share/applications/pkgunbox.desktop \
+            --icon-file AppDir/usr/share/icons/hicolor/512x512/apps/pkgunbox.png \
+            --plugin qt \
+            --output appimage
+
+      - name: Rename AppImage with version
+        id: version
+        run: |
+          cd PKGUnbox/extractor/build
+          # Get version from tag or use commit hash
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION="dev-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
+          fi
+          APPIMAGE_FILE=$(ls -1 PKGUnbox*.AppImage | head -1)
+          FINAL_NAME="PKGUnbox-x86_64-${VERSION}.AppImage"
+          mv "$APPIMAGE_FILE" "$FINAL_NAME"
+          echo "appimage=$FINAL_NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "=== AppImage Built ==="
+          echo "File: $FINAL_NAME"
+          ls -lh "$FINAL_NAME"
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKGUnbox-${{ steps.version.outputs.version }}
+          path: PKGUnbox/extractor/build/PKGUnbox-x86_64-*.AppImage
+          retention-days: 30
+
+  release:
+    needs: build-appimage
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download AppImage artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: release/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/**/*.AppImage
+          generate_release_notes: true
+          draft: false
+          prerelease: false
