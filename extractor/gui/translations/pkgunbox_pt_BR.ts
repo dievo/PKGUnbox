@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Save destination settings</source>
-        <translation>Salvar as configuracoes de destino</translation>
+        <translation>Salvar as configurações de destino</translation>
     </message>
     <message>
         <source>Games:</source>
@@ -37,7 +37,7 @@
     </message>
     <message>
         <source>Select games directory</source>
-        <translation>Selecionar diretorio de jogos</translation>
+        <translation>Selecionar diretório de jogos</translation>
     </message>
     <message>
         <source>DLCs:</source>
@@ -45,7 +45,7 @@
     </message>
     <message>
         <source>Select DLCs/Updates directory</source>
-        <translation>Selecionar diretorio de DLCs/Updates</translation>
+        <translation>Selecionar diretório de DLCs/Updates</translation>
     </message>
     <message>
         <source>Extract</source>
@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>Start PKG extraction</source>
-        <translation>Iniciar extracao do PKG</translation>
+        <translation>Iniciar extração do PKG</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -65,7 +65,7 @@
     </message>
     <message>
         <source>Waiting for operation...</source>
-        <translation>Aguardando operacao...</translation>
+        <translation>Aguardando operação...</translation>
     </message>
     <message>
         <source>Ready</source>
@@ -97,7 +97,7 @@
     </message>
     <message>
         <source>Please configure the games directory.</source>
-        <translation>Configure o diretorio de jogos.</translation>
+        <translation>Configure o diretório de jogos.</translation>
     </message>
     <message>
         <source>Starting: %1</source>
@@ -113,7 +113,7 @@
     </message>
     <message>
         <source>Canceled by user.</source>
-        <translation>Cancelado pelo usuario.</translation>
+        <translation>Cancelado pelo usuário.</translation>
     </message>
     <message>
         <source>Canceled</source>
@@ -121,23 +121,23 @@
     </message>
     <message>
         <source>Completed successfully!</source>
-        <translation>Concluido com sucesso!</translation>
+        <translation>Concluído com sucesso!</translation>
     </message>
     <message>
         <source>Done!</source>
-        <translation>Concluido!</translation>
+        <translation>Concluído!</translation>
     </message>
     <message>
         <source>Error (code %1)</source>
-        <translation>Erro (codigo %1)</translation>
+        <translation>Erro (código %1)</translation>
     </message>
     <message>
         <source>Failed (code %1)</source>
-        <translation>Falha (codigo %1)</translation>
+        <translation>Falha (código %1)</translation>
     </message>
     <message>
         <source>Settings saved!</source>
-        <translation>Configuracoes salvas!</translation>
+        <translation>Configurações salvas!</translation>
     </message>
     <message>
         <source>PKGUnbox</source>
@@ -149,11 +149,11 @@
     </message>
     <message>
         <source>Copy log contents to clipboard</source>
-        <translation>Copiar conteudo do log para area de transferencia</translation>
+        <translation>Copiar conteúdo do log para área de transferência</translation>
     </message>
     <message>
         <source>Log copied to clipboard!</source>
-        <translation>Log copiado para a area de transferencia!</translation>
+        <translation>Log copiado para a área de transferência!</translation>
     </message>
 </context>
 </TS>

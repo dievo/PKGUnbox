@@ -5,7 +5,7 @@
     <name>MainWindow</name>
     <message>
         <source>Drag a .pkg file here</source>
-        <translation>Arrastra un archivo .pkg aqui</translation>
+        <translation>Arrastra un archivo .pkg aquí</translation>
     </message>
     <message>
         <source>or click to browse</source>
@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>No file selected</source>
-        <translation>Ningun archivo seleccionado</translation>
+        <translation>Ningún archivo seleccionado</translation>
     </message>
     <message>
         <source>Clear selected file</source>
@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Save destination settings</source>
-        <translation>Guardar configuracion de destino</translation>
+        <translation>Guardar configuración de destino</translation>
     </message>
     <message>
         <source>Games:</source>
@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>Start PKG extraction</source>
-        <translation>Iniciar extraccion del PKG</translation>
+        <translation>Iniciar extracción del PKG</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -65,7 +65,7 @@
     </message>
     <message>
         <source>Waiting for operation...</source>
-        <translation>Esperando operacion...</translation>
+        <translation>Esperando operación...</translation>
     </message>
     <message>
         <source>Ready</source>
@@ -121,7 +121,7 @@
     </message>
     <message>
         <source>Completed successfully!</source>
-        <translation>Completado con exito!</translation>
+        <translation>Completado con éxito!</translation>
     </message>
     <message>
         <source>Done!</source>
@@ -129,15 +129,15 @@
     </message>
     <message>
         <source>Error (code %1)</source>
-        <translation>Error (codigo %1)</translation>
+        <translation>Error (código %1)</translation>
     </message>
     <message>
         <source>Failed (code %1)</source>
-        <translation>Fallo (codigo %1)</translation>
+        <translation>Fallo (código %1)</translation>
     </message>
     <message>
         <source>Settings saved!</source>
-        <translation>Configuracion guardada!</translation>
+        <translation>Configuración guardada!</translation>
     </message>
     <message>
         <source>PKGUnbox</source>
