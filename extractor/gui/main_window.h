@@ -35,6 +35,7 @@ private slots:
 	void onExtractionProgress(int current, int total);
 	void onExtractionFinished(int returnCode);
 	void onLanguageChanged(int index);
+	void onCopyLog();
 
 private:
 	void setupUI();
@@ -68,6 +69,7 @@ private:
 	QTextEdit *m_logArea;
 	QLabel *m_statusLabel;
 	QProgressBar *m_progressBar;
+	QPushButton *m_copyLogBtn;
 
 	// Labels needing retranslation
 	QLabel *m_dirTitleLabel;

@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QApplication>
+#include <QClipboard>
 #include <QScrollBar>
 #include <QSizePolicy>
 #include <QPainter>
@@ -342,10 +343,22 @@ void MainWindow::setupUI() {
 	// ========================================
 	// === Log (always visible, fills remaining space)
 	// ========================================
+	auto *logTitleBar = new QHBoxLayout();
+	logTitleBar->setContentsMargins(0, 0, 0, 0);
+
 	auto *logLabel = new QLabel(tr("Log"));
 	logLabel->setObjectName("logLabel");
 	m_logTitleLabel = logLabel;
-	mainLayout->addWidget(logLabel);
+	logTitleBar->addWidget(logLabel);
+	logTitleBar->addStretch();
+
+	m_copyLogBtn = new QPushButton(tr("Copy Log"));
+	m_copyLogBtn->setObjectName("copyLogBtn");
+	m_copyLogBtn->setToolTip(tr("Copy log contents to clipboard"));
+	connect(m_copyLogBtn, &QPushButton::clicked, this, &MainWindow::onCopyLog);
+	logTitleBar->addWidget(m_copyLogBtn);
+
+	mainLayout->addLayout(logTitleBar);
 
 	m_logArea = new QTextEdit();
 	m_logArea->setReadOnly(true);
@@ -520,6 +533,12 @@ void MainWindow::onExtractionLog(const QString &message) {
 	scrollBar->setValue(scrollBar->maximum());
 }
 
+void MainWindow::onCopyLog() {
+	QClipboard *clipboard = QApplication::clipboard();
+	clipboard->setText(m_logArea->toPlainText());
+	m_statusLabel->setText(tr("Log copied to clipboard!"));
+}
+
 void MainWindow::onExtractionProgress(int current, int total) {
 	if (total > 0) {
 		int percent = static_cast<int>((static_cast<double>(current) / total) * 100);
@@ -651,6 +670,8 @@ void MainWindow::retranslateUI() {
 	m_cancelBtn->setText(tr("Cancel"));
 
 	m_logTitleLabel->setText(tr("Log"));
+	m_copyLogBtn->setText(tr("Copy Log"));
+	m_copyLogBtn->setToolTip(tr("Copy log contents to clipboard"));
 	m_langLabel->setText(tr("Language:"));
 	m_logArea->setPlaceholderText(tr("Waiting for operation..."));
 

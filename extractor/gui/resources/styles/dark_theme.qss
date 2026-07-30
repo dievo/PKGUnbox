@@ -183,6 +183,22 @@ QLabel#logLabel {
     padding: 2px 0;
 }
 
+QPushButton#copyLogBtn {
+    background-color: transparent;
+    color: #949ba4;
+    border: 1px solid #3f4147;
+    border-radius: 4px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QPushButton#copyLogBtn:hover {
+    background-color: #4e5058;
+    color: #dbdee1;
+    border-color: #6d6f78;
+}
+
 /* === Text Edit (Log) === */
 QTextEdit {
     background-color: #2b2d31;

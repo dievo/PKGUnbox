@@ -143,5 +143,17 @@
         <source>PKGUnbox</source>
         <translation>PKGUnbox</translation>
     </message>
+    <message>
+        <source>Copy Log</source>
+        <translation>Copiar Registro</translation>
+    </message>
+    <message>
+        <source>Copy log contents to clipboard</source>
+        <translation>Copiar contenido del registro al portapapeles</translation>
+    </message>
+    <message>
+        <source>Log copied to clipboard!</source>
+        <translation>Registro copiado al portapapeles!</translation>
+    </message>
 </context>
 </TS>
