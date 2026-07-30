@@ -490,7 +490,7 @@ void MainWindow::onStartExtraction() {
 	m_logArea->append(QString(tr("Destination: %1")).arg(gamesDir));
 	m_logArea->append("======================================");
 
-	m_worker = new ExtractWorker(pkgPath, gamesDir, this);
+	m_worker = new ExtractWorker(pkgPath, gamesDir, m_addonsDirInput->text(), this);
 	connect(m_worker, &ExtractWorker::log, this, &MainWindow::onExtractionLog);
 	connect(m_worker, &ExtractWorker::progress, this, &MainWindow::onExtractionProgress);
 	connect(m_worker, &ExtractWorker::finished, this, &MainWindow::onExtractionFinished);

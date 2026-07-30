@@ -7,7 +7,7 @@ class ExtractWorker : public QThread {
 	Q_OBJECT
 
 public:
-	explicit ExtractWorker(const QString &pkgPath, const QString &destDir, QObject *parent = nullptr);
+	explicit ExtractWorker(const QString &pkgPath, const QString &gamesDir, const QString &addonsDir, QObject *parent = nullptr);
 	void run() override;
 
 signals:
@@ -17,5 +17,6 @@ signals:
 
 private:
 	QString m_pkgPath;
-	QString m_destDir;
+	QString m_gamesDir;
+	QString m_addonsDir;
 };

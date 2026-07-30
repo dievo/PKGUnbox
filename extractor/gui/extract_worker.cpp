@@ -3,10 +3,11 @@
 #include <QCoreApplication>
 #include <QRegularExpression>
 
-ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &destDir, QObject *parent)
+ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &gamesDir, const QString &addonsDir, QObject *parent)
 	: QThread(parent)
 	, m_pkgPath(pkgPath)
-	, m_destDir(destDir)
+	, m_gamesDir(gamesDir)
+	, m_addonsDir(addonsDir)
 {}
 
 void ExtractWorker::run() {
@@ -35,11 +36,18 @@ void ExtractWorker::run() {
 		emit log(">>> Type: DLC");
 	}
 
-	emit log(QString(">>> Extracting to: %1").arg(m_destDir));
+	// Route to correct directory based on type
+	QString extractDir = m_gamesDir;
+	if (ret == 103 && !m_addonsDir.isEmpty()) {
+		extractDir = m_addonsDir;
+		emit log(QString(">>> DLC detected, using addons directory: %1").arg(extractDir));
+	}
+
+	emit log(QString(">>> Extracting to: %1").arg(extractDir));
 
 	QProcess extract;
 	extract.setProcessChannelMode(QProcess::MergedChannels);
-	extract.start(cliPath, {m_pkgPath, m_destDir});
+	extract.start(cliPath, {m_pkgPath, extractDir});
 
 	QRegularExpression progressRegex(R"(Extracting file (\d+) of (\d+))");
 	QString buffer;
