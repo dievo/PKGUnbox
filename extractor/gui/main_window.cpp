@@ -354,22 +354,20 @@ void MainWindow::setupUI() {
 	mainLayout->addWidget(m_logArea, 1);
 
 	// ========================================
-	// === Status Label
+	// === Status + Language (same row)
 	// ========================================
+	auto *statusLangLayout = new QHBoxLayout();
+	statusLangLayout->setContentsMargins(0, 0, 0, 0);
+
 	m_statusLabel = new QLabel(tr("Ready"));
 	m_statusLabel->setObjectName("statusLabel");
-	mainLayout->addWidget(m_statusLabel);
-
-	// ========================================
-	// === Language Selector
-	// ========================================
-	auto *langLayout = new QHBoxLayout();
-	langLayout->setContentsMargins(0, 0, 0, 0);
+	statusLangLayout->addWidget(m_statusLabel);
+	statusLangLayout->addStretch();
 
 	auto *langLabel = new QLabel(tr("Language:"));
 	langLabel->setObjectName("langLabel");
 	m_langLabel = langLabel;
-	langLayout->addWidget(langLabel);
+	statusLangLayout->addWidget(langLabel);
 
 	m_languageCombo = new QComboBox();
 	m_languageCombo->addItem("English", "en");
@@ -378,10 +376,9 @@ void MainWindow::setupUI() {
 	m_languageCombo->setFixedWidth(140);
 	connect(m_languageCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
 	        this, &MainWindow::onLanguageChanged);
-	langLayout->addWidget(m_languageCombo);
-	langLayout->addStretch();
+	statusLangLayout->addWidget(m_languageCombo);
 
-	mainLayout->addLayout(langLayout);
+	mainLayout->addLayout(statusLangLayout);
 }
 
 void MainWindow::loadSettings() {
