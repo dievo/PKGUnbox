@@ -14,12 +14,7 @@ emulator core** and focus exclusively on running games.
 This left a gap: users had no built-in way to extract `.pkg` files (games,
 updates, DLCs) into the format shadPS4 expects. PKGUnbox fills that gap.
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│  PKGUnbox        │ ──▶ │  shadPS4         │ ──▶ │  Play!           │
-│  (extract .pkg)  │     │  (run the game)  │     │  (enjoy)         │
-└─────────────────┘     └──────────────────┘     └──────────────────┘
-```
+![PKGUnbox workflow](docs/screenshots/diagram.png)
 
 **Key facts:**
 
@@ -77,6 +72,8 @@ Go to [Releases](../../releases) and download the latest version for your platfo
 - Save/load output directories
 - Multi-language support (English, Portugues, Espanol)
 - CLI mode for power users and scripting
+
+![PKGUnbox GUI](docs/screenshots/print-1.png)
 
 ## CLI Reference
 
