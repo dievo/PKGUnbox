@@ -38,7 +38,7 @@ set(EXTRACTOR_SOURCES
 
 # Libraries
 add_library(libcryptopp STATIC IMPORTED)
-set_property(TARGET libcryptopp PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/cryptopp/cryptopp/libcryptopp.a")
+set_property(TARGET libcryptopp PROPERTY IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../externals/cryptopp/libcryptopp.a")
 
 # === CLI target (always built) ===
 add_executable(pkgunbox main.cpp ${EXTRACTOR_SOURCES})
@@ -61,8 +61,8 @@ if(BUILD_GUI)
 		gui/translations/pkgunbox_es.ts
 	)
 
-	# Windows icon resource
-	if(WIN32)
+	# Windows icon resource (optional — only if .ico exists)
+	if(WIN32 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/gui/pkgunbox.ico")
 		set(GUI_SOURCES ${GUI_SOURCES} gui/pkgunbox.rc)
 	endif()
 
