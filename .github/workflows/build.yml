@@ -173,6 +173,17 @@ jobs:
           cd PKGUnbox/externals/cryptopp
           mingw32-make -j$(nproc) CXX=g++
 
+      - name: Generate Windows icon
+        run: |
+          cd PKGUnbox/extractor
+          python3 -c "
+          from PIL import Image
+          img = Image.open('icon.png')
+          img_resized = img.resize((256, 256), Image.LANCZOS)
+          img_resized.save('gui/pkgunbox.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)])
+          print('Generated gui/pkgunbox.ico')
+          "
+
       - name: Configure CMake
         run: |
           cd PKGUnbox/extractor/build
@@ -205,8 +216,15 @@ jobs:
           mkdir -p PKGUnbox-Windows/translations
           cp translations/pkgunbox_*.qm PKGUnbox-Windows/translations/ 2>/dev/null || true
 
-          # Copy icon
-          cp ../icon.png PKGUnbox-Windows/pkgunbox.png
+          # Copy icon — generate .ico for Windows
+          python3 -c "
+          from PIL import Image
+          img = Image.open('../icon.png')
+          img_resized = img.resize((256, 256), Image.LANCZOS)
+          img_resized.save('PKGUnbox-Windows/pkgunbox.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)])
+          img_resized.save('PKGUnbox-Windows/pkgunbox.png')
+          print('Icon generated: pkgunbox.ico + pkgunbox.png')
+          "
 
           # Use windeployqt to copy Qt DLLs
           windeployqt PKGUnbox-Windows/pkgunbox-gui.exe

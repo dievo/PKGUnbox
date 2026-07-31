@@ -61,6 +61,11 @@ if(BUILD_GUI)
 		gui/translations/pkgunbox_es.ts
 	)
 
+	# Windows icon resource
+	if(WIN32)
+		set(GUI_SOURCES ${GUI_SOURCES} gui/pkgunbox.rc)
+	endif()
+
 	add_executable(pkgunbox-gui ${GUI_SOURCES} ${EXTRACTOR_SOURCES} ${TS_FILES})
 	target_compile_definitions(pkgunbox-gui PRIVATE PKGUNBOX_VERSION="${PKGUNBOX_VERSION}")
 	target_link_libraries(pkgunbox-gui PRIVATE
