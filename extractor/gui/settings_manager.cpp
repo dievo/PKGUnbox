@@ -7,7 +7,7 @@ SettingsManager::SettingsManager(QObject *parent)
 {}
 
 QString SettingsManager::gamesDir() const {
-	return m_settings->value("games_dir", QDir::homePath() + "/Games/PS4").toString();
+	return m_settings->value("games_dir", QDir::homePath() + "/Games/PS4/Games").toString();
 }
 
 void SettingsManager::setGamesDir(const QString &dir) {
@@ -15,7 +15,7 @@ void SettingsManager::setGamesDir(const QString &dir) {
 }
 
 QString SettingsManager::addonsDir() const {
-	return m_settings->value("addons_dir", QDir::homePath() + "/Games/PS4/Updates-DLCs").toString();
+	return m_settings->value("addons_dir", QDir::homePath() + "/Games/PS4/DLCs").toString();
 }
 
 void SettingsManager::setAddonsDir(const QString &dir) {
