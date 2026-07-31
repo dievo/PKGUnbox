@@ -1,32 +1,50 @@
-# PKGUnbox
+<p align="center">
+  <img src="extractor/icon.png" alt="PKGUnbox" width="200">
+</p>
 
-*"Unbox your PS4 games"*
+<h1 align="center">PKGUnbox</h1>
 
-A standalone tool to extract PS4 `.pkg` files — base games, updates, and DLCs.
+<p align="center">
+  <strong>Unbox your PS4 games. Done.</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/license-GPL--2.0-green" alt="License">
+  <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows-lightgrey" alt="Platform">
+  <img src="https://img.shields.io/badge/C%2B%2B-23-blue" alt="C++23">
+</p>
+
+---
+
+A standalone tool that extracts PS4 `.pkg` files — base games, updates, and DLCs.
+No bloat. No library management. Just extract and play.
 
 ## Why PKGUnbox?
 
-The [shadPS4 emulator](https://github.com/shadps4-emu/shadPS4) is the leading
-PlayStation 4 emulator for Windows, Linux, and macOS. As shadPS4 matured, its
-development team made a deliberate decision: **remove PKG extraction from the
-emulator core** and focus exclusively on running games.
+The [shadPS4 emulator](https://github.com/shadps4-emu/shadPS4) removed PKG
+extraction from its core to focus on emulation. This left users without a
+built-in way to prepare their game files.
 
-This left a gap: users had no built-in way to extract `.pkg` files (games,
-updates, DLCs) into the format shadPS4 expects. PKGUnbox fills that gap.
+**PKGUnbox fills that gap.**
 
-![PKGUnbox workflow](docs/screenshots/diagram.png)
+<p align="center">
+  <img src="docs/screenshots/diagram.png" alt="PKGUnbox workflow" width="600">
+</p>
 
-**Key facts:**
+- **Fully independent** — own PKG parser and crypto, no shadPS4 dependency
+- **One job** — extract PKG files. That's it. Open, extract, close.
+- **Works everywhere** — Linux AppImage, Windows .exe, no dependencies needed
 
-- PKGUnbox is **fully independent** of shadPS4 — it has its own PKG parser
-  and crypto implementation.
-- The official shadPS4 repository no longer includes PKG extraction code.
-- The PKG format is defined by Sony and is stable. PKGUnbox will continue
-  to work regardless of how shadPS4 evolves.
+## Screenshot
+
+<p align="center">
+  <img src="docs/screenshots/pkgunbox-screen-4.png" alt="PKGUnbox GUI" width="700">
+</p>
 
 ## Download
 
-Go to [Releases](../../releases) and download the latest version for your platform.
+Go to [Releases](../../releases) and download the latest version.
 
 | Platform | File | Requirements |
 |----------|------|-------------|
@@ -35,75 +53,70 @@ Go to [Releases](../../releases) and download the latest version for your platfo
 
 ## Quick Start
 
-### Linux (AppImage)
+### Linux
 
-1. Download `PKGUnbox-x86_64.AppImage` from [Releases](../../releases)
-2. Make it executable:
-   ```bash
-   chmod +x PKGUnbox-x86_64.AppImage
-   ```
-3. Run it:
-   ```bash
-   # Open the GUI
-   ./PKGUnbox-x86_64.AppImage
-
-   # Or extract a PKG directly from the terminal
-   ./PKGUnbox-x86_64.AppImage /path/to/file.pkg /path/to/output/
-   ```
+```bash
+chmod +x PKGUnbox-x86_64.AppImage
+./PKGUnbox-x86_64.AppImage
+```
 
 ### Windows
 
-1. Download `PKGUnbox-windows-x64.zip` from [Releases](../../releases)
-2. Extract the `.zip` anywhere
-3. Run it:
-   - Double-click `pkgunbox-gui.exe` for the GUI
-   - Or open a terminal and run:
-     ```
-     pkgunbox.exe C:\path\to\file.pkg C:\path\to\output\
-     ```
+Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 
-## Features
-
-- Extract PS4 `.pkg` files (base games, updates, DLCs)
-- Automatic PKG type detection (base = 101, update = 102, DLC = 103)
-- GUI with drag-and-drop support (Qt6)
-- Dark theme with blurple accent colors
-- Progress bar during extraction
-- Save/load output directories
-- Multi-language support (English, Portugues, Espanol)
-- CLI mode for power users and scripting
-
-![PKGUnbox GUI](docs/screenshots/print-1.png)
-
-## CLI Reference
+### CLI
 
 ```bash
-# Extract a PKG file to a specific directory
+# Extract a PKG
 ./pkgunbox /path/to/file.pkg /path/to/output/
 
-# Extract to the same directory as the source file (default)
-./pkgunbox /path/to/file.pkg
-
-# Check PKG type only (returns 101=base, 102=update, 103=DLC)
+# Check PKG type (101=base, 102=update, 103=DLC)
 ./pkgunbox /path/to/file.pkg --check-type
 ```
 
-### Exit codes
+## Features
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | Error (file not found, invalid PKG, etc.) |
+| Feature | Description |
+|---------|-------------|
+| **Drag & Drop** | Drop a `.pkg` file directly onto the window |
+| **Auto Detection** | Automatically detects PKG type (base, update, DLC) |
+| **Progress Bar** | Visual feedback — blue during extraction, green on completion |
+| **Copy Log** | One-click copy of the full extraction log for debugging |
+| **Dark Theme** | Easy on the eyes, with blurple accent colors |
+| **Multi-language** | English, Portugues, Espanol — with proper accents |
+| **Save Directories** | Remember your Games/DLCs paths across sessions |
+| **CLI Mode** | For power users and scripting |
 
-## GUI Usage
+### GUI Walkthrough
 
-The GUI supports:
+| Step | What you see |
+|------|-------------|
+| **1. Drop** | Drag a `.pkg` file or click to browse |
+| **2. Configure** | Set Games and DLCs destination directories |
+| **3. Extract** | Click Extract — watch the progress bar and live log |
+| **4. Done** | Green bar, success message, log ready to copy |
 
-- **Drag & drop** — drag a `.pkg` file onto the window
-- **File browser** — click the drop zone to browse
-- **Directory selection** — choose where to extract games and DLCs
-- **Language switcher** — bottom-left corner (English, Portugues, Espanol)
-- **Live log** — see extraction progress in real time
+<p align="center">
+  <img src="docs/screenshots/pkgunbox-screen-1.png" width="160" alt="Step 1">
+  <img src="docs/screenshots/pkgunbox-screen-2.png" width="160" alt="Step 2">
+  <img src="docs/screenshots/pkgunbox-screen-3.png" width="160" alt="Step 3">
+  <img src="docs/screenshots/pkgunbox-screen-4.png" width="160" alt="Step 4">
+</p>
+
+## CLI Reference
+
+```
+Usage: pkgunbox <file.pkg> [output_dir] [--check-type]
+
+Arguments:
+  file.pkg        Path to the PKG file
+  output_dir      Output directory (default: same as source)
+  --check-type    Print PKG type and exit (101/102/103)
+
+Exit codes:
+  0  Success
+  1  Error (file not found, invalid PKG, etc.)
+```
 
 ## Building from Source
 
@@ -118,63 +131,54 @@ The GUI supports:
 ### Build
 
 ```bash
-# Clone the repo
 git clone --recurse-submodules <repo-url>
 cd PKGUnbox/extractor/build
 
-# First time only: build everything
-./buildall        # runs: lconf → cryptobuild → lbuild
+# First time: build everything
+./buildall
 
 # Rebuild after code changes
 ./lbuild
-
-# Reconfigure (after CMakeLists.txt changes)
-./lconf && ./lbuild
 ```
 
 ### Run
 
 ```bash
-# CLI
-./pkgunbox /path/to/file.pkg
-
-# GUI
-./pkgunbox-gui
-# or: ./run_gui.sh    (fixes Snap/libpthread conflict)
-```
-
-### Build AppImage
-
-```bash
-./build_appimage.sh                # package existing binaries
-./build_appimage.sh --rebuild      # rebuild + package
-./build_appimage.sh --clean        # clean + rebuild + package
+./pkgunbox /path/to/file.pkg    # CLI
+./pkgunbox-gui                   # GUI
 ```
 
 ## Platform Support
 
-PKGUnbox uses Qt6, which defines the minimum supported platforms:
+| Platform | Format | Minimum | Notes |
+|----------|--------|---------|-------|
+| **Linux** | AppImage | glibc >= 2.35 | Ubuntu 22.04+, Fedora 36+ |
+| **Windows** | .exe (ZIP) | Windows 10 | Qt6 requirement |
 
-| Platform | Format | Minimum version | Notes |
-|----------|--------|-----------------|-------|
-| **Linux** | AppImage | glibc >= 2.35 (Ubuntu 22.04+, Fedora 36+, etc.) | Works on all modern distros. Snap users: use `run_gui.sh` to avoid libpthread conflicts. |
-| **Windows** | .exe (ZIP) | Windows 10 (all versions) | Windows 7 and 8.x are **not** supported by Qt6. |
+## How it fits in the ecosystem
 
-> **AppImage compatibility:** The AppImage is built on Ubuntu 24.04 and bundles
-> all required Qt6 libraries. It runs on any Linux distribution with glibc >= 2.35
-> — no need to install Qt6 or any other dependency.
+```
+shadPS4 (emulator)
+  └── Runs games
 
-## Related Projects & Credits
+PKGUnbox (companion tool)
+  └── Extracts PKGs for shadPS4
+```
 
-- **[shadPS4](https://github.com/shadps4-emu/shadPS4)** — the PlayStation 4
-  emulator that PKGUnbox complements. PKGUnbox's extraction core was originally
-  based on early shadPS4 code, before PKG parsing was removed from the emulator.
-- **[shadPS4Plus](https://github.com/AzaharPlus/shadPS4Plus)** — the direct fork of
-  shadPS4 that served as the base for PKGUnbox. It provided a working CLI
-  PKG extractor and install scripts. PKGUnbox extends that work with a
-  user-friendly Qt6 GUI.
-- **[shadps4-qtlauncher](https://github.com/shadps4-emu/shadps4-qtlauncher)** —
-  official Qt launcher for shadPS4 (for users who prefer a GUI over CLI).
+PKGUnbox is **not** a game manager. It does one thing: extract PKG files into
+the format shadPS4 expects. Then you close it.
+
+## Credits
+
+- **[shadPS4](https://github.com/shadps4-emu/shadPS4)** — the emulator PKGUnbox complements
+- **[shadPS4Plus](https://github.com/AzaharPlus/shadPS4Plus)** — fork that provided the original CLI extractor
+
+## Legal
+
+PKGUnbox is intended for extracting PKG files that you legally own — games you
+purchased, backups of your own discs, or homebrew content you created. We do
+not encourage or condone piracy. Use this tool responsibly and in compliance
+with applicable laws in your region.
 
 ## License
 
