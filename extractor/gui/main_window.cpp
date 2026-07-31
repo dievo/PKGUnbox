@@ -138,7 +138,7 @@ QIcon MainWindow::makeIcon(const QString &type, const QColor &color, const QColo
 }
 
 void MainWindow::setupUI() {
-	setWindowTitle("PKGUnbox");
+	setWindowTitle(QString("PKGUnbox - v%1").arg(PKGUNBOX_VERSION));
 	setMinimumSize(640, 480);
 	setAcceptDrops(true);
 
@@ -650,7 +650,7 @@ void MainWindow::onLanguageChanged(int index) {
 }
 
 void MainWindow::retranslateUI() {
-	setWindowTitle(tr("PKGUnbox"));
+	setWindowTitle(QString("PKGUnbox - v%1").arg(PKGUNBOX_VERSION));
 	m_dropText->setText(tr("Drag a .pkg file here"));
 	m_dropSubtext->setText(tr("or click to browse"));
 	m_fileInput->setPlaceholderText(tr("No file selected"));
