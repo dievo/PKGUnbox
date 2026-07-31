@@ -128,17 +128,64 @@ Exit codes:
 - zlib >= 1.3
 - Git (for submodule)
 
-### Build
+### Clone
 
 ```bash
 git clone --recurse-submodules <repo-url>
-cd PKGUnbox/extractor/build
+cd PKGUnbox
+```
 
-# First time: build everything
+### Build (Linux)
+
+```bash
+cd extractor/build
+
+# First time: build everything (crypto lib + binaries)
 ./buildall
 
-# Rebuild after code changes
+# After code changes: rebuild only
 ./lbuild
+```
+
+### Generate AppImage (Linux)
+
+```bash
+cd extractor/build
+
+# Build + package into a single .AppImage file
+./build_appimage.sh --rebuild
+```
+
+The AppImage is fully self-contained — no dependencies needed. Just run it:
+
+```bash
+./PKGUnbox-x86_64-*.AppImage
+```
+
+### Build (Windows)
+
+On Windows, use MSYS2/MinGW or Visual Studio with Qt6 installed:
+
+```bash
+cd PKGUnbox/extractor
+
+# Configure
+cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+# Build crypto lib
+cd ../externals/cryptopp && make
+cp libcryptopp.a ../../extractor/build/
+
+# Build project
+cd ../../extractor/build
+cmake --build . --config Release
+```
+
+Or use the convenience scripts (same as Linux):
+
+```bash
+cd PKGUnbox/extractor/build
+./lconf && ./cryptobuild && ./lbuild
 ```
 
 ### Run
