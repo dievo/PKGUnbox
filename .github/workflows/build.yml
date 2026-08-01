@@ -243,7 +243,8 @@ jobs:
           echo "=== Windows package contents ==="
           ls -lh PKGUnbox-Windows/
 
-      - name: Create ZIP archive
+      - name: Calculate version
+        id: version
         shell: pwsh
         run: |
           cd extractor/build
@@ -252,18 +253,24 @@ jobs:
           } else {
             $VERSION = "dev-$(git rev-parse --short HEAD 2>$null)"
           }
-          $FINAL_NAME = "PKGUnbox-windows-x64-${VERSION}"
-          Compress-Archive -Path "PKGUnbox-Windows/*" -DestinationPath "${FINAL_NAME}.zip"
-          echo "windows_zip=${FINAL_NAME}.zip" >> $env:GITHUB_OUTPUT
           echo "version=$VERSION" >> $env:GITHUB_OUTPUT
-          echo "=== Windows Build Done ==="
-          Get-ChildItem "${FINAL_NAME}.zip" | Select-Object Name, @{N='Size';E={'{0:N1} MB' -f ($_.Length/1MB)}}
+          echo "=== Version: $VERSION ==="
+
+      - name: Rename folder with version
+        shell: pwsh
+        run: |
+          cd extractor/build
+          $VERSION = "${{ steps.version.outputs.version }}"
+          $FINAL_NAME = "PKGUnbox-Windows-x64-${VERSION}"
+          Rename-Item -Path "PKGUnbox-Windows" -NewName "$FINAL_NAME"
+          echo "=== Package contents ==="
+          Get-ChildItem "$FINAL_NAME" | Select-Object Name, @{N='Size';E={'{0:N1} MB' -f ($_.Length/1MB)}}
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: PKGUnbox-Windows-${{ steps.version.outputs.version }}
-          path: extractor/build/PKGUnbox-windows-x64-*.zip
+          path: extractor/build/PKGUnbox-Windows-x64-${{ steps.version.outputs.version }}
           retention-days: 30
 
   release:
@@ -277,6 +284,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: release/
+
+      - name: Package Windows release ZIP
+        run: |
+          cd release
+          # Find the Windows folder (PKGUnbox-Windows-x64-v*)
+          WIN_DIR=$(find . -maxdepth 1 -type d -name 'PKGUnbox-Windows-x64-*' | head -1)
+          if [ -n "$WIN_DIR" ]; then
+            ZIP_NAME="${WIN_DIR}.zip"
+            (cd "$WIN_DIR" && zip -r "../${ZIP_NAME}" .)
+            echo "Created: ${ZIP_NAME}"
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
