@@ -254,8 +254,8 @@ jobs:
           }
           $FINAL_NAME = "PKGUnbox-windows-x64-${VERSION}"
           Compress-Archive -Path "PKGUnbox-Windows/*" -DestinationPath "${FINAL_NAME}.zip"
-          echo "windows_zip=${FINAL_NAME}.zip" >> "$env:GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$env:GITHUB_OUTPUT"
+          echo "windows_zip=${FINAL_NAME}.zip" >> $env:GITHUB_OUTPUT
+          echo "version=$VERSION" >> $env:GITHUB_OUTPUT
           echo "=== Windows Build Done ==="
           Get-ChildItem "${FINAL_NAME}.zip" | Select-Object Name, @{N='Size';E={'{0:N1} MB' -f ($_.Length/1MB)}}
 
