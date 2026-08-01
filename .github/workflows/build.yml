@@ -160,8 +160,8 @@ jobs:
             mingw-w64-x86_64-zlib
             mingw-w64-x86_64-make
             mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-python-pillow
             git
-            python-pillow
 
       - name: Checkout
         uses: actions/checkout@v4
