@@ -35,12 +35,12 @@ jobs:
 
       - name: Build Crypto++ library
         run: |
-          cd PKGUnbox/externals/cryptopp
+          cd externals/cryptopp
           make -j$(nproc)
 
       - name: Configure CMake
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           cmake --fresh .. \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=ON \
@@ -49,12 +49,12 @@ jobs:
 
       - name: Build
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           cmake --build . --config Release -j$(nproc)
 
       - name: Verify binaries
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           echo "=== CLI ==="
           file ./pkgunbox
           ./pkgunbox --help || true
@@ -64,14 +64,14 @@ jobs:
 
       - name: Download linuxdeploy tools
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy-*.AppImage
 
       - name: Create AppDir structure
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           rm -rf AppDir
           mkdir -p AppDir/usr/bin
           mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
@@ -107,7 +107,7 @@ jobs:
 
       - name: Build AppImage
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           export DEPLOY_GTK_VERSION=3
           ./linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
@@ -119,7 +119,7 @@ jobs:
       - name: Rename AppImage with version
         id: version
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION="${{ github.ref_name }}"
           else
@@ -138,7 +138,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PKGUnbox-Linux-${{ steps.version.outputs.version }}
-          path: PKGUnbox/extractor/build/PKGUnbox-linux-x86_64-*.AppImage
+          path: extractor/build/PKGUnbox-linux-x86_64-*.AppImage
           retention-days: 30
 
   build-windows:
@@ -170,12 +170,12 @@ jobs:
 
       - name: Build Crypto++ library
         run: |
-          cd PKGUnbox/externals/cryptopp
+          cd externals/cryptopp
           mingw32-make -j$(nproc) CXX=g++
 
       - name: Generate Windows icon
         run: |
-          cd PKGUnbox/extractor
+          cd extractor
           python3 -c "
           from PIL import Image
           img = Image.open('icon.png')
@@ -186,19 +186,19 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           cmake -G "MinGW Makefiles" .. \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=ON
 
       - name: Build
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           mingw32-make -j$(nproc)
 
       - name: Verify binaries
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           echo "=== CLI ==="
           ./pkgunbox.exe --help || true
           echo ""
@@ -207,7 +207,7 @@ jobs:
 
       - name: Deploy Qt6 dependencies
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           mkdir -p PKGUnbox-Windows
           cp pkgunbox.exe PKGUnbox-Windows/
           cp pkgunbox-gui.exe PKGUnbox-Windows/
@@ -245,7 +245,7 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          cd PKGUnbox/extractor/build
+          cd extractor/build
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION="${{ github.ref_name }}"
           else
@@ -262,7 +262,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PKGUnbox-Windows-${{ steps.version.outputs.version }}
-          path: PKGUnbox/extractor/build/PKGUnbox-windows-x64-*.zip
+          path: extractor/build/PKGUnbox-windows-x64-*.zip
           retention-days: 30
 
   release:
