@@ -48,7 +48,7 @@ Go to [Releases](../../releases) and download the latest version.
 
 | Platform | File | Requirements |
 |----------|------|-------------|
-| **Linux** | `PKGUnbox-x86_64.AppImage` | None (self-contained) |
+| **Linux** | `PKGUnbox-linux-x86_64.AppImage` | None (self-contained) |
 | **Windows** | `PKGUnbox-windows-x64.zip` | None (self-contained) |
 
 ## Quick Start
@@ -56,8 +56,8 @@ Go to [Releases](../../releases) and download the latest version.
 ### Linux
 
 ```bash
-chmod +x PKGUnbox-x86_64.AppImage
-./PKGUnbox-x86_64.AppImage
+chmod +x PKGUnbox-linux-x86_64.AppImage
+./PKGUnbox-linux-x86_64.AppImage
 ```
 
 ### Windows
@@ -159,7 +159,7 @@ cd extractor/build
 The AppImage is fully self-contained — no dependencies needed. Just run it:
 
 ```bash
-./PKGUnbox-x86_64-*.AppImage
+./PKGUnbox-linux-x86_64-*.AppImage
 ```
 
 ### Build (Windows)

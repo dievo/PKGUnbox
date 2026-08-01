@@ -150,7 +150,7 @@ if [ -n "$APPIMAGE_FILE" ]; then
     fi
 
     if [ -n "$VERSION" ]; then
-        FINAL_NAME="PKGUnbox-x86_64-${VERSION}.AppImage"
+        FINAL_NAME="PKGUnbox-linux-x86_64-${VERSION}.AppImage"
         mv "$BUILD_DIR/$APPIMAGE_FILE" "$BUILD_DIR/$FINAL_NAME"
         APPIMAGE_FILE="$FINAL_NAME"
     fi

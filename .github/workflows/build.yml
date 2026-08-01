@@ -126,7 +126,7 @@ jobs:
             VERSION="dev-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
           fi
           APPIMAGE_FILE=$(ls -1 PKGUnbox*.AppImage | head -1)
-          FINAL_NAME="PKGUnbox-x86_64-${VERSION}.AppImage"
+          FINAL_NAME="PKGUnbox-linux-x86_64-${VERSION}.AppImage"
           mv "$APPIMAGE_FILE" "$FINAL_NAME"
           echo "appimage=$FINAL_NAME" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -138,7 +138,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PKGUnbox-Linux-${{ steps.version.outputs.version }}
-          path: PKGUnbox/extractor/build/PKGUnbox-x86_64-*.AppImage
+          path: PKGUnbox/extractor/build/PKGUnbox-linux-x86_64-*.AppImage
           retention-days: 30
 
   build-windows:
