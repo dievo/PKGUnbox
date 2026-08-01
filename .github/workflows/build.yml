@@ -244,17 +244,18 @@ jobs:
           ls -lh PKGUnbox-Windows/
 
       - name: Create ZIP archive
+        shell: pwsh
         run: |
           cd extractor/build
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            VERSION="${{ github.ref_name }}"
-          else
-            VERSION="dev-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
-          fi
-          FINAL_NAME="PKGUnbox-windows-x64-${VERSION}"
-          cd PKGUnbox-Windows && zip -r "../${FINAL_NAME}.zip" . && cd ..
-          echo "windows_zip=${FINAL_NAME}.zip" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if ("${{ github.ref }}" -match "refs/tags/v") {
+            $VERSION = "${{ github.ref_name }}"
+          } else {
+            $VERSION = "dev-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
+          }
+          $FINAL_NAME = "PKGUnbox-windows-x64-${VERSION}"
+          Compress-Archive -Path "PKGUnbox-Windows/*" -DestinationPath "${FINAL_NAME}.zip"
+          echo "windows_zip=${FINAL_NAME}.zip" >> "$env:GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$env:GITHUB_OUTPUT"
           echo "=== Windows Build Done ==="
           ls -lh "${FINAL_NAME}.zip"
 
