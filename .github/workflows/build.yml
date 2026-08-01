@@ -288,12 +288,16 @@ jobs:
       - name: Package Windows release ZIP
         run: |
           cd release
-          # Find the Windows folder (PKGUnbox-Windows-x64-v*)
-          WIN_DIR=$(find . -maxdepth 1 -type d -name 'PKGUnbox-Windows-x64-*' | head -1)
+          # download-artifact creates: release/<artifact-name>/<content-folder>/
+          # Find the Windows content folder recursively
+          WIN_DIR=$(find . -type d -name 'PKGUnbox-Windows-x64-*' | head -1)
           if [ -n "$WIN_DIR" ]; then
-            ZIP_NAME="${WIN_DIR}.zip"
+            ZIP_NAME="$(basename "$WIN_DIR").zip"
             (cd "$WIN_DIR" && zip -r "../${ZIP_NAME}" .)
             echo "Created: ${ZIP_NAME}"
+          else
+            echo "ERROR: Windows folder not found!"
+            find . -type d | head -20
           fi
 
       - name: Create GitHub Release
