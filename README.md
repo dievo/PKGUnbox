@@ -32,7 +32,7 @@ built-in way to prepare their game files.
   <img src="docs/screenshots/diagram.png" alt="PKGUnbox workflow" width="600">
 </p>
 
-- **Fully independent** — own PKG parser and crypto, no shadPS4 dependency
+- **Standalone** — PKG parser and crypto derived from shadPS4, fully decoupled at runtime
 - **One job** — extract PKG files. That's it. Open, extract, close.
 - **Works everywhere** — Linux AppImage, Windows .exe, no dependencies needed
 
@@ -83,7 +83,7 @@ Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 | **Progress Bar** | Visual feedback — blue during extraction, green on completion |
 | **Copy Log** | One-click copy of the full extraction log for debugging |
 | **Dark Theme** | Easy on the eyes, with blurple accent colors |
-| **Multi-language** | English, Portugues, Espanol — with proper accents |
+| **Multi-language** | English, Português, Español — with proper accents |
 | **Save Directories** | Remember your Games/DLCs paths across sessions |
 | **CLI Mode** | For power users and scripting |
 
@@ -217,7 +217,7 @@ the format shadPS4 expects. Then you close it.
 
 ## Credits
 
-- **[shadPS4](https://github.com/shadps4-emu/shadPS4)** — the emulator PKGUnbox complements
+- **[shadPS4](https://github.com/shadps4-emu/shadPS4)** — the emulator PKGUnbox complements; PKG parser and crypto code derived from its codebase
 - **[shadPS4Plus](https://github.com/AzaharPlus/shadPS4Plus)** — fork that provided the original CLI extractor
 
 ## Legal
