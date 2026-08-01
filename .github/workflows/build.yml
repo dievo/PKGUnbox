@@ -234,16 +234,14 @@ jobs:
           cp /mingw64/bin/libstdc++-6.dll PKGUnbox-Windows/ 2>/dev/null || true
           cp /mingw64/bin/libwinpthread-1.dll PKGUnbox-Windows/ 2>/dev/null || true
 
-          # Copy ALL common DLLs from MinGW to avoid missing dependency errors
-          for dll in zlib1 libpng16-16 libjpeg-8 libtiff-6 libwebp-7 \
-                     libbz2-1 libfreetype-6 libharfbuzz-0 libpcre2-16-0 \
-                     libintl-8 libiconv-2 libmd4c; do
-            cp "/mingw64/bin/${dll}.dll" PKGUnbox-Windows/ 2>/dev/null || true
+          # Copy ALL DLL dependencies using ldd (catches everything)
+          echo "=== Finding all DLL dependencies ==="
+          ldd pkgunbox-gui.exe | grep -o '/mingw64/bin/[^ ]*' | while read dll; do
+            cp "$dll" PKGUnbox-Windows/ 2>/dev/null && echo "Copied: $(basename $dll)"
           done
-
-          # Copy any remaining Qt/image DLLs that windeployqt might have missed
-          cp /mingw64/bin/libpng*.dll PKGUnbox-Windows/ 2>/dev/null || true
-          cp /mingw64/bin/libmd*.dll PKGUnbox-Windows/ 2>/dev/null || true
+          ldd pkgunbox.exe | grep -o '/mingw64/bin/[^ ]*' | while read dll; do
+            cp "$dll" PKGUnbox-Windows/ 2>/dev/null && echo "Copied: $(basename $dll)"
+          done
 
           # Strip symbols
           strip -s PKGUnbox-Windows/*.exe PKGUnbox-Windows/*.dll 2>/dev/null || true
