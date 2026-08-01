@@ -287,23 +287,17 @@ jobs:
 
       - name: Package Windows release ZIP
         run: |
-          echo "=== Release directory structure ==="
-          find release/ -type f | head -30
-          echo ""
-          echo "=== Looking for Windows folder ==="
           cd release
-          # download-artifact creates: release/<artifact-name>/<content>/
-          WIN_DIR=$(find . -type d -name 'PKGUnbox-Windows-x64-*' | head -1)
-          echo "WIN_DIR='$WIN_DIR'"
+          # download-artifact uses artifact NAME as folder: PKGUnbox-Windows-<version>
+          WIN_DIR=$(find . -maxdepth 1 -type d -name 'PKGUnbox-Windows-*' | head -1)
+          echo "Windows folder: $WIN_DIR"
           if [ -n "$WIN_DIR" ]; then
-            ZIP_NAME="$(basename "$WIN_DIR").zip"
-            echo "Creating: ${ZIP_NAME}"
+            ZIP_NAME="PKGUnbox-Windows-x64-${{ github.ref_name }}.zip"
             (cd "$WIN_DIR" && zip -r "../${ZIP_NAME}" .)
-            echo "=== Created ZIP ==="
+            echo "Created: ${ZIP_NAME}"
             ls -lh "../${ZIP_NAME}"
           else
             echo "ERROR: Windows folder not found!"
-            echo "=== All directories ==="
             find . -type d
           fi
 
