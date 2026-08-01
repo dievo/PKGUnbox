@@ -294,8 +294,9 @@ jobs:
           if [ -n "$WIN_DIR" ]; then
             ZIP_NAME="PKGUnbox-Windows-x64-${{ github.ref_name }}.zip"
             (cd "$WIN_DIR" && zip -r "../${ZIP_NAME}" .)
+            cd release
             echo "Created: ${ZIP_NAME}"
-            ls -lh "../${ZIP_NAME}"
+            ls -lh "${ZIP_NAME}"
           else
             echo "ERROR: Windows folder not found!"
             find . -type d
