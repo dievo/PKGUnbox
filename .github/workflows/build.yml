@@ -250,7 +250,7 @@ jobs:
           if ("${{ github.ref }}" -match "refs/tags/v") {
             $VERSION = "${{ github.ref_name }}"
           } else {
-            $VERSION = "dev-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
+            $VERSION = "dev-$(git rev-parse --short HEAD 2>$null)"
           }
           $FINAL_NAME = "PKGUnbox-windows-x64-${VERSION}"
           Compress-Archive -Path "PKGUnbox-Windows/*" -DestinationPath "${FINAL_NAME}.zip"
