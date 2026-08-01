@@ -307,6 +307,64 @@ jobs:
           files: |
             release/**/*.AppImage
             release/**/*.zip
-          generate_release_notes: true
+          body: |
+            ## PKGUnbox ${{ github.ref_name }}
+
+            **Unbox your PS4 games. Done.**
+
+            A standalone tool that extracts PS4 `.pkg` files — base games, updates, and DLCs.
+            No bloat. No library management. Just extract and play.
+
+            ### What is PKGUnbox?
+
+            The [shadPS4 emulator](https://github.com/shadps4-emu/shadPS4) removed PKG extraction from its core to focus on emulation. **PKGUnbox fills that gap** — a dedicated companion tool for preparing your game files.
+
+            ### ✨ Features
+
+            - **Drag & Drop** — Drop a `.pkg` file directly onto the window
+            - **Auto Detection** — Automatically detects PKG type (base, update, DLC)
+            - **Progress Bar** — Visual feedback during extraction
+            - **Copy Log** — One-click copy of the full extraction log
+            - **Dark Theme** — Easy on the eyes, with blurple accent colors
+            - **Multi-language** — English, Português, Español
+            - **Save Directories** — Remember your Games/DLCs paths across sessions
+            - **CLI Mode** — For power users and scripting
+
+            ### 📦 Downloads
+
+            | Platform | File | Requirements |
+            |----------|------|-------------|
+            | **Linux** | `PKGUnbox-linux-x86_64-${{ github.ref_name }}.AppImage` | None (self-contained) |
+            | **Windows** | `PKGUnbox-Windows-x64-${{ github.ref_name }}.zip` | Windows 10+ |
+
+            ### 🚀 Quick Start
+
+            **Linux:**
+            ```bash
+            chmod +x PKGUnbox-linux-x86_64-${{ github.ref_name }}.AppImage
+            ./PKGUnbox-linux-x86_64-${{ github.ref_name }}.AppImage
+            ```
+
+            **Windows:**
+            Extract the `.zip` and double-click `pkgunbox-gui.exe`.
+
+            **CLI:**
+            ```bash
+            ./pkgunbox /path/to/file.pkg /path/to/output/
+            ./pkgunbox /path/to/file.pkg --check-type  # 101=base, 102=update, 103=DLC
+            ```
+
+            ### 🏗️ Building from Source
+
+            See [README](https://github.com/dievo/PKGUnbox/blob/main/README.md) for full build instructions.
+
+            ### 📝 License
+
+            GPL-2.0-or-later
+
+            ---
+
+            *PKGUnbox is intended for extracting PKG files that you legally own. Use responsibly.*
+          generate_release_notes: false
           draft: false
           prerelease: false
