@@ -161,7 +161,6 @@ jobs:
             mingw-w64-x86_64-make
             mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-python-pillow
-            mingw-w64-x86_64-p7zip
             git
 
       - name: Checkout
@@ -253,7 +252,7 @@ jobs:
             VERSION="dev-$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
           fi
           FINAL_NAME="PKGUnbox-windows-x64-${VERSION}"
-          7z a "${FINAL_NAME}.zip" PKGUnbox-Windows/
+          cd PKGUnbox-Windows && zip -r "../${FINAL_NAME}.zip" . && cd ..
           echo "windows_zip=${FINAL_NAME}.zip" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "=== Windows Build Done ==="
