@@ -7,10 +7,10 @@
  * Result of shadPS4 auto-detection
  */
 struct ShadPS4Config {
-	bool found;           // Whether config.toml was found
-	QString gamesDir;     // game_install_dir from config
+	bool found;           // Whether config.json was found
+	QString gamesDir;     // First enabled path from install_dirs array
 	QString addonsDir;    // addon_install_dir from config
-	QString configPath;   // Path to config.toml that was read
+	QString configPath;   // Path to config.json that was read
 };
 
 class SettingsManager : public QObject {
@@ -29,14 +29,14 @@ public:
 	void setLanguage(const QString &lang);
 
 	/**
-	 * Detect shadPS4 installation by reading config.toml
+	 * Detect shadPS4 installation by reading config.json
 	 * @return ShadPS4Config with found status and directories
 	 */
 	ShadPS4Config detectShadPS4() const;
 
 private:
 	/**
-	 * Get the expected path to shadPS4 config.toml for current OS
+	 * Get the expected path to shadPS4 config.json for current OS
 	 */
 	QString shadPS4ConfigPath() const;
 

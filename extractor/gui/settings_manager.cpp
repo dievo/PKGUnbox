@@ -1,7 +1,10 @@
 #include "settings_manager.h"
-#include "toml_parser.h"
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QStandardPaths>
 
 SettingsManager::SettingsManager(QObject *parent)
@@ -38,17 +41,27 @@ void SettingsManager::setLanguage(const QString &lang) {
 // ========================================
 
 QString SettingsManager::shadPS4ConfigPath() const {
-	// Expected locations for shadPS4 config.toml
+	// shadPS4 stores config as config.json (not TOML)
 	#ifdef Q_OS_LINUX
-	// Linux: ~/.config/shadPS4/config.toml
-	return QDir::homePath() + "/.config/shadPS4/config.toml";
+	// Linux: ~/.local/share/shadPS4/config.json (XDG_DATA_HOME)
+	QString dataDir = QDir::homePath() + "/.local/share/shadPS4";
+	// Fallback: respect XDG_DATA_HOME if set
+	QString xdgData = qEnvironmentVariable("XDG_DATA_HOME");
+	if (!xdgData.isEmpty()) {
+		dataDir = xdgData + "/shadPS4";
+	}
+	return dataDir + "/config.json";
 	#elif defined(Q_OS_WIN)
-	// Windows: %APPDATA%/shadPS4/config.toml
+	// Windows: %APPDATA%/shadPS4/config.json (CSIDL_APPDATA = Roaming)
+	QString appData = qEnvironmentVariable("APPDATA");
+	if (!appData.isEmpty()) {
+		return appData + "/shadPS4/config.json";
+	}
 	return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
-		+ "/../Roaming/shadPS4/config.toml";
+		+ "/../shadPS4/config.json";
 	#elif defined(Q_OS_MAC)
-	// macOS: ~/Library/Application Support/shadPS4/config.toml
-	return QDir::homePath() + "/Library/Application Support/shadPS4/config.toml";
+	// macOS: ~/Library/Application Support/shadPS4/config.json
+	return QDir::homePath() + "/Library/Application Support/shadPS4/config.json";
 	#else
 	return QString();
 	#endif
@@ -63,21 +76,44 @@ ShadPS4Config SettingsManager::detectShadPS4() const {
 		return result;
 	}
 
-	// Parse the TOML file
-	QMap<QString, QString> config = TomlParser::parseFile(configPath);
-	if (config.isEmpty()) {
+	// Parse the JSON config file
+	QFile file(configPath);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return result;
 	}
 
-	// Extract directories
-	QString gamesDir = TomlParser::getValue(config, "General", "game_install_dir");
-	QString addonsDir = TomlParser::getValue(config, "General", "addon_install_dir");
+	QByteArray data = file.readAll();
+	file.close();
+
+	QJsonParseError parseError;
+	QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+	if (parseError.error != QJsonParseError::NoError || doc.isNull()) {
+		return result;
+	}
+
+	QJsonObject root = doc.object();
+	QJsonObject general = root.value("General").toObject();
+
+	// Extract games directory from install_dirs array
+	// Structure: "install_dirs": [{"enabled": true, "path": "..."}]
+	QJsonArray installDirs = general.value("install_dirs").toArray();
+	for (const QJsonValue &entry : installDirs) {
+		QJsonObject obj = entry.toObject();
+		if (obj.value("enabled").toBool()) {
+			QString path = obj.value("path").toString();
+			if (!path.isEmpty()) {
+				result.gamesDir = path;
+				break;
+			}
+		}
+	}
+
+	// Extract addons directory (simple string key)
+	result.addonsDir = general.value("addon_install_dir").toString();
 
 	// Check if at least one directory was found
-	if (!gamesDir.isEmpty() || !addonsDir.isEmpty()) {
+	if (!result.gamesDir.isEmpty() || !result.addonsDir.isEmpty()) {
 		result.found = true;
-		result.gamesDir = gamesDir;
-		result.addonsDir = addonsDir;
 		result.configPath = configPath;
 	}
 

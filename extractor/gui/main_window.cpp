@@ -690,14 +690,14 @@ void MainWindow::onDetectShadPS4() {
 		m_logArea->append("======================================");
 	} else {
 		m_statusLabel->setText(tr("shadPS4 not found. Configure directories manually."));
-		m_logArea->append(tr("shadPS4 config.toml not found."));
+		m_logArea->append(tr("shadPS4 config.json not found."));
 		m_logArea->append(tr("Expected locations:"));
 		#ifdef Q_OS_LINUX
-		m_logArea->append(tr("  ~/.config/shadPS4/config.toml"));
+		m_logArea->append(tr("  ~/.local/share/shadPS4/config.json"));
 		#elif defined(Q_OS_WIN)
-		m_logArea->append(tr("  %%APPDATA%%/shadPS4/config.toml"));
+		m_logArea->append(tr("  %%APPDATA%%/shadPS4/config.json"));
 		#elif defined(Q_OS_MAC)
-		m_logArea->append(tr("  ~/Library/Application Support/shadPS4/config.toml"));
+		m_logArea->append(tr("  ~/Library/Application Support/shadPS4/config.json"));
 		#endif
 	}
 }

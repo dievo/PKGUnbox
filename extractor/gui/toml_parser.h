@@ -4,7 +4,7 @@
 #include <QMap>
 
 /**
- * Simple TOML parser for reading shadPS4 config.toml
+ * Simple TOML parser for reading config files
  * Only supports basic key = "value" pairs in sections
  */
 class TomlParser {
@@ -19,7 +19,7 @@ public:
      * Get a value from parsed config
      * @param config Parsed config map
      * @param section Section name (e.g., "General")
-     * @param key Key name (e.g., "game_install_dir")
+     * @param key Key name (e.g., "addon_install_dir")
      * @return Value or empty string if not found
      */
     static QString getValue(const QMap<QString, QString> &config,

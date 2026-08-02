@@ -152,8 +152,8 @@
         <translation>shadPS4 no encontrado. Configure los directorios manualmente.</translation>
     </message>
     <message>
-        <source>shadPS4 config.toml not found.</source>
-        <translation>config.toml de shadPS4 no encontrado.</translation>
+        <source>shadPS4 config.json not found.</source>
+        <translation>config.json de shadPS4 no encontrado.</translation>
     </message>
     <message>
         <source>Expected locations:</source>
