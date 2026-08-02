@@ -39,6 +39,7 @@ private slots:
 	void onExtractionFinished(int returnCode);
 	void onLanguageChanged(int index);
 	void onCopyLog();
+	void onClearLog();
 	void onDetectShadPS4();
 
 private:
@@ -49,6 +50,7 @@ private:
 	void clearFileList();
 	void updateFileListDisplay();
 	void retranslateUI();
+	void updateLogButtons();
 
 	// Icon factory
 	QIcon makeIcon(const QString &type, const QColor &color, const QColor &disabledColor = QColor());
@@ -80,6 +82,7 @@ private:
 	QLabel *m_statusLabel;
 	QProgressBar *m_progressBar;
 	QPushButton *m_copyLogBtn;
+	QPushButton *m_clearLogBtn;
 
 	// Labels needing retranslation
 	QLabel *m_dirTitleLabel;

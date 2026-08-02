@@ -204,6 +204,14 @@
         <translation>Copiar conteúdo do log para área de transferência</translation>
     </message>
     <message>
+        <source>Clear Log</source>
+        <translation>Limpar Log</translation>
+    </message>
+    <message>
+        <source>Clear log contents</source>
+        <translation>Limpar conteúdo do log</translation>
+    </message>
+    <message>
         <source>Log copied to clipboard!</source>
         <translation>Log copiado para a área de transferência!</translation>
     </message>

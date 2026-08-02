@@ -204,6 +204,14 @@
         <translation>Copiar contenido del registro al portapapeles</translation>
     </message>
     <message>
+        <source>Clear Log</source>
+        <translation>Limpiar Registro</translation>
+    </message>
+    <message>
+        <source>Clear log contents</source>
+        <translation>Limpiar contenido del registro</translation>
+    </message>
+    <message>
         <source>Log copied to clipboard!</source>
         <translation>Registro copiado al portapapeles!</translation>
     </message>

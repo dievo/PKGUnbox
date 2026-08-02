@@ -204,6 +204,14 @@
         <translation>Copy log contents to clipboard</translation>
     </message>
     <message>
+        <source>Clear Log</source>
+        <translation>Clear Log</translation>
+    </message>
+    <message>
+        <source>Clear log contents</source>
+        <translation>Clear log contents</translation>
+    </message>
+    <message>
         <source>Log copied to clipboard!</source>
         <translation>Log copied to clipboard!</translation>
     </message>

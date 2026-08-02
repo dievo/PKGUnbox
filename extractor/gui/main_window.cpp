@@ -380,9 +380,17 @@ void MainWindow::setupUI() {
 	logTitleBar->addWidget(logLabel);
 	logTitleBar->addStretch();
 
+	m_clearLogBtn = new QPushButton(tr("Clear Log"));
+	m_clearLogBtn->setObjectName("clearLogBtn");
+	m_clearLogBtn->setToolTip(tr("Clear log contents"));
+	m_clearLogBtn->setEnabled(false);
+	connect(m_clearLogBtn, &QPushButton::clicked, this, &MainWindow::onClearLog);
+	logTitleBar->addWidget(m_clearLogBtn);
+
 	m_copyLogBtn = new QPushButton(tr("Copy Log"));
 	m_copyLogBtn->setObjectName("copyLogBtn");
 	m_copyLogBtn->setToolTip(tr("Copy log contents to clipboard"));
+	m_copyLogBtn->setEnabled(false);
 	connect(m_copyLogBtn, &QPushButton::clicked, this, &MainWindow::onCopyLog);
 	logTitleBar->addWidget(m_copyLogBtn);
 
@@ -392,6 +400,7 @@ void MainWindow::setupUI() {
 	m_logArea->setReadOnly(true);
 	m_logArea->setPlaceholderText(tr("Waiting for operation..."));
 	m_logArea->setMinimumHeight(80);
+	connect(m_logArea, &QTextEdit::textChanged, this, &MainWindow::updateLogButtons);
 	mainLayout->addWidget(m_logArea, 1);
 
 	// ========================================
@@ -667,6 +676,16 @@ void MainWindow::onCopyLog() {
 	m_statusLabel->setText(tr("Log copied to clipboard!"));
 }
 
+void MainWindow::onClearLog() {
+	m_logArea->clear();
+}
+
+void MainWindow::updateLogButtons() {
+	bool hasContent = !m_logArea->toPlainText().trimmed().isEmpty();
+	m_copyLogBtn->setEnabled(hasContent);
+	m_clearLogBtn->setEnabled(hasContent);
+}
+
 // ========================================
 // === shadPS4 Auto-Detection
 // ========================================
@@ -854,6 +873,8 @@ void MainWindow::retranslateUI() {
 	m_logTitleLabel->setText(tr("Log"));
 	m_copyLogBtn->setText(tr("Copy Log"));
 	m_copyLogBtn->setToolTip(tr("Copy log contents to clipboard"));
+	m_clearLogBtn->setText(tr("Clear Log"));
+	m_clearLogBtn->setToolTip(tr("Clear log contents"));
 	m_langLabel->setText(tr("Language:"));
 	m_logArea->setPlaceholderText(tr("Waiting for operation..."));
 
