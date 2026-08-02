@@ -207,5 +207,9 @@
         <source>Log copied to clipboard!</source>
         <translation>Registro copiado al portapapeles!</translation>
     </message>
+    <message>
+        <source>Remove file</source>
+        <translation>Eliminar archivo</translation>
+    </message>
 </context>
 </TS>

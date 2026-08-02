@@ -207,5 +207,9 @@
         <source>Log copied to clipboard!</source>
         <translation>Log copied to clipboard!</translation>
     </message>
+    <message>
+        <source>Remove file</source>
+        <translation>Remove file</translation>
+    </message>
 </context>
 </TS>

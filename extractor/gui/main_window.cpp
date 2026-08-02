@@ -215,6 +215,7 @@ void MainWindow::setupUI() {
 
 	m_clearFilesBtn = new QPushButton(tr("Clear All"));
 	m_clearFilesBtn->setObjectName("clearFilesBtn");
+	m_clearFilesBtn->setFixedHeight(24);
 	m_clearFilesBtn->setToolTip(tr("Clear all selected files"));
 	connect(m_clearFilesBtn, &QPushButton::clicked, this, &MainWindow::onClearFiles);
 	fileListHeader->addWidget(m_clearFilesBtn);
@@ -502,7 +503,8 @@ void MainWindow::updateFileListDisplay() {
 
 	m_fileCountLabel->setText(tr("Selected Files (%1)").arg(m_selectedFiles.size()));
 
-	for (const QString &path : m_selectedFiles) {
+	for (int i = 0; i < m_selectedFiles.size(); ++i) {
+		const QString &path = m_selectedFiles[i];
 		QFileInfo info(path);
 		QString fileName = info.fileName();
 		QString sizeStr;
@@ -516,24 +518,63 @@ void MainWindow::updateFileListDisplay() {
 			sizeStr = QString("%1 KB").arg(size / 1024.0, 0, 'f', 1);
 		}
 
-		// Add item with icon and info
-		QListWidgetItem *item = new QListWidgetItem();
-		item->setText(fileName);
-		item->setToolTip(path);
-		item->setData(Qt::UserRole, path);
+		// Create custom widget for each file row
+		auto *rowWidget = new QWidget();
+		auto *rowLayout = new QHBoxLayout(rowWidget);
+		rowLayout->setContentsMargins(4, 2, 4, 2);
+		rowLayout->setSpacing(6);
 
-		// Set icon based on file type
+		// File icon
+		auto *iconLabel = new QLabel();
 		QFileInfo fileInfo(path);
 		if (fileInfo.suffix().toLower() == "pkg") {
-			item->setIcon(makeIcon("box", QColor("#7aa2f7")));
+			iconLabel->setPixmap(makeIcon("box", QColor("#7aa2f7")).pixmap(16, 16));
 		} else {
-			item->setIcon(makeIcon("file", QColor("#cdd6f4")));
+			iconLabel->setPixmap(makeIcon("file", QColor("#cdd6f4")).pixmap(16, 16));
 		}
+		iconLabel->setFixedSize(16, 16);
+		rowLayout->addWidget(iconLabel);
 
-		// Set status tip with size
-		item->setStatusTip(sizeStr);
+		// File name
+		auto *nameLabel = new QLabel(fileName);
+		nameLabel->setToolTip(path);
+		nameLabel->setObjectName("fileItemName");
+		rowLayout->addWidget(nameLabel, 1);
 
+		// File size
+		auto *sizeLabel = new QLabel(sizeStr);
+		sizeLabel->setObjectName("fileItemSize");
+		sizeLabel->setFixedWidth(60);
+		rowLayout->addWidget(sizeLabel);
+
+		// Remove button
+		auto *removeBtn = new QPushButton();
+		removeBtn->setIcon(makeIcon("cancel", QColor("#f87171")));
+		removeBtn->setObjectName("removeFileBtn");
+		removeBtn->setFixedSize(20, 20);
+		removeBtn->setToolTip(tr("Remove file"));
+		// Use lambda to capture index
+		connect(removeBtn, &QPushButton::clicked, this, [this, i]() {
+			if (i >= 0 && i < m_selectedFiles.size()) {
+				m_selectedFiles.removeAt(i);
+				updateFileListDisplay();
+				if (m_selectedFiles.isEmpty()) {
+					m_fileListWidget->setVisible(false);
+					m_dropZone->setVisible(true);
+					m_extractBtn->setEnabled(false);
+					m_statusLabel->setText(tr("Ready"));
+				} else {
+					m_statusLabel->setText(tr("%1 file(s) selected").arg(m_selectedFiles.size()));
+				}
+			}
+		});
+		rowLayout->addWidget(removeBtn);
+
+		// Add row to list
+		auto *item = new QListWidgetItem();
+		item->setSizeHint(QSize(0, 28));
 		m_fileList->addItem(item);
+		m_fileList->setItemWidget(item, rowWidget);
 	}
 
 	// Show file list, hide drop zone
