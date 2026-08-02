@@ -9,10 +9,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-2.0.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/license-GPL--2.0-green" alt="License">
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows-lightgrey" alt="Platform">
   <img src="https://img.shields.io/badge/C%2B%2B-23-blue" alt="C++23">
+  <a href="https://github.com/dievo/PKGUnbox/actions/workflows/build.yml"><img src="https://github.com/dievo/PKGUnbox/actions/workflows/build.yml/badge.svg" alt="Build"></a>
 </p>
 
 ---
@@ -67,8 +68,11 @@ Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 ### CLI
 
 ```bash
-# Extract a PKG
+# Extract a single PKG
 ./pkgunbox /path/to/file.pkg /path/to/output/
+
+# Extract multiple PKGs
+./pkgunbox game.pkg dlc.pkg update.pkg /path/to/output/
 
 # Check PKG type (101=base, 102=update, 103=DLC)
 ./pkgunbox /path/to/file.pkg --check-type
@@ -78,14 +82,16 @@ Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 
 | Feature | Description |
 |---------|-------------|
-| **Drag & Drop** | Drop a `.pkg` file directly onto the window |
+| **Drag & Drop** | Drop `.pkg` files directly onto the window (multiple supported) |
 | **Auto Detection** | Automatically detects PKG type (base, update, DLC) |
+| **Auto-detect shadPS4** | One-click config detection for shadPS4 paths |
 | **Progress Bar** | Visual feedback — blue during extraction, green on completion |
 | **Copy Log** | One-click copy of the full extraction log for debugging |
+| **Clear Log** | Clear log contents with one click |
 | **Dark Theme** | Easy on the eyes, with blurple accent colors |
 | **Multi-language** | English, Português, Español — with proper accents |
 | **Save Directories** | Remember your Games/DLCs paths across sessions |
-| **CLI Mode** | For power users and scripting |
+| **CLI Multi-file** | Extract multiple PKGs in a single command |
 
 ### GUI Walkthrough
 
@@ -106,16 +112,34 @@ Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 ## CLI Reference
 
 ```
-Usage: pkgunbox <file.pkg> [output_dir] [--check-type]
+Usage: pkgunbox <file.pkg> [output_dir] [options]
+       pkgunbox <file1.pkg> <file2.pkg> ... [output_dir]
 
 Arguments:
-  file.pkg        Path to the PKG file
-  output_dir      Output directory (default: same as source)
-  --check-type    Print PKG type and exit (101/102/103)
+  file.pkg        One or more PS4 .pkg files to extract
+  output_dir      Output directory (default: next to each .pkg)
+
+Options:
+  --output DIR    Explicit output directory for all files
+  --check-type    Print PKG type and exit (101=base, 102=update, 103=DLC)
+  --help          Show help message
+
+Examples:
+  # Extract a single file
+  ./pkgunbox game.pkg /output
+
+  # Extract multiple files
+  ./pkgunbox game.pkg dlc.pkg update.pkg /output
+
+  # Extract with glob
+  ./pkgunbox *.pkg /output
+
+  # Check package type
+  ./pkgunbox game.pkg --check-type
 
 Exit codes:
-  0  Success
-  1  Error (file not found, invalid PKG, etc.)
+  0   Success
+  1   Error (file not found, invalid PKG, etc.)
 ```
 
 ## Building from Source
