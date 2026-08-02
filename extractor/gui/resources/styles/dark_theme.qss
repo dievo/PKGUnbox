@@ -163,6 +163,27 @@ QPushButton#browseBtn:hover {
     background-color: #6d6f78;
 }
 
+/* Detect shadPS4 button — Compact, inline */
+QPushButton#detectBtn {
+    background-color: transparent;
+    color: #f0c674;
+    border: 1px solid #7d6a30;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QPushButton#detectBtn:hover {
+    background-color: #4a3f1f;
+    border-color: #f0c674;
+}
+
+QPushButton#detectBtn:disabled {
+    color: #4e5058;
+    border: 1px solid #3f4147;
+}
+
 /* Clear file button */
 QPushButton#clearFileBtn {
     background-color: #da373c;

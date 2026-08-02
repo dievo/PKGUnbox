@@ -4,20 +4,28 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <source>Drag a .pkg file here</source>
-        <translation>Arrastra un archivo .pkg aquí</translation>
+        <source>Drag .pkg files here</source>
+        <translation>Arrastra archivos .pkg aquí</translation>
     </message>
     <message>
-        <source>or click to browse</source>
-        <translation>o haz clic para seleccionar</translation>
+        <source>or click to browse (multiple files supported)</source>
+        <translation>o haz clic para seleccionar (soporte para múltiples archivos)</translation>
     </message>
     <message>
         <source>No file selected</source>
         <translation>Ningún archivo seleccionado</translation>
     </message>
     <message>
-        <source>Clear selected file</source>
-        <translation>Limpiar archivo seleccionado</translation>
+        <source>Selected Files (%1)</source>
+        <translation>Archivos Seleccionados (%1)</translation>
+    </message>
+    <message>
+        <source>Clear All</source>
+        <translation>Limpiar Todo</translation>
+    </message>
+    <message>
+        <source>Clear all selected files</source>
+        <translation>Limpiar todos los archivos seleccionados</translation>
     </message>
     <message>
         <source>Destination</source>
@@ -30,6 +38,14 @@
     <message>
         <source>Save destination settings</source>
         <translation>Guardar configuración de destino</translation>
+    </message>
+    <message>
+        <source>Auto-detect</source>
+        <translation>Auto-detectar</translation>
+    </message>
+    <message>
+        <source>Auto-detect shadPS4 installation and configure directories</source>
+        <translation>Auto-detectar instalación de shadPS4 y configurar directorios</translation>
     </message>
     <message>
         <source>Games:</source>
@@ -48,12 +64,12 @@
         <translation>Seleccionar directorio de DLCs/Actualizaciones</translation>
     </message>
     <message>
-        <source>Extract</source>
-        <translation>Extraer</translation>
+        <source>Extract All</source>
+        <translation>Extraer Todo</translation>
     </message>
     <message>
-        <source>Start PKG extraction</source>
-        <translation>Iniciar extracción del PKG</translation>
+        <source>Start batch extraction</source>
+        <translation>Iniciar extracción por lotes</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -76,12 +92,8 @@
         <translation>Idioma:</translation>
     </message>
     <message>
-        <source>File: %1</source>
-        <translation>Archivo: %1</translation>
-    </message>
-    <message>
-        <source>Select PKG file</source>
-        <translation>Seleccionar archivo PKG</translation>
+        <source>Select PKG files</source>
+        <translation>Seleccionar archivos PKG</translation>
     </message>
     <message>
         <source>PKG files (*.pkg);;All files (*)</source>
@@ -92,20 +104,60 @@
         <translation>Aviso</translation>
     </message>
     <message>
-        <source>Please select a PKG file.</source>
-        <translation>Seleccione un archivo PKG.</translation>
+        <source>Please select PKG file(s).</source>
+        <translation>Seleccione archivo(s) PKG.</translation>
     </message>
     <message>
         <source>Please configure the games directory.</source>
         <translation>Configure el directorio de juegos.</translation>
     </message>
     <message>
-        <source>Starting: %1</source>
-        <translation>Iniciando: %1</translation>
+        <source>%1 file(s) selected</source>
+        <translation>%1 archivo(s) seleccionado(s)</translation>
     </message>
     <message>
-        <source>Destination: %1</source>
-        <translation>Destino: %1</translation>
+        <source>Starting batch extraction: %1 file(s)</source>
+        <translation>Iniciando extracción por lotes: %1 archivo(s)</translation>
+    </message>
+    <message>
+        <source>Games directory: %1</source>
+        <translation>Directorio de juegos: %1</translation>
+    </message>
+    <message>
+        <source>DLCs directory: %1</source>
+        <translation>Directorio de DLCs: %1</translation>
+    </message>
+    <message>
+        <source>shadPS4 detected! Directories configured.</source>
+        <translation>shadPS4 detectado! Directorios configurados.</translation>
+    </message>
+    <message>
+        <source>shadPS4 detected!</source>
+        <translation>shadPS4 detectado!</translation>
+    </message>
+    <message>
+        <source>Config: %1</source>
+        <translation>Config: %1</translation>
+    </message>
+    <message>
+        <source>Games: %1</source>
+        <translation>Juegos: %1</translation>
+    </message>
+    <message>
+        <source>DLCs: %1</source>
+        <translation>DLCs: %1</translation>
+    </message>
+    <message>
+        <source>shadPS4 not found. Configure directories manually.</source>
+        <translation>shadPS4 no encontrado. Configure los directorios manualmente.</translation>
+    </message>
+    <message>
+        <source>shadPS4 config.toml not found.</source>
+        <translation>config.toml de shadPS4 no encontrado.</translation>
+    </message>
+    <message>
+        <source>Expected locations:</source>
+        <translation>Ubicaciones esperadas:</translation>
     </message>
     <message>
         <source>Canceling...</source>

@@ -1,7 +1,7 @@
 project(PkgExtractor)
 cmake_minimum_required(VERSION 3.5)
 
-set(PKGUNBOX_VERSION "1.0.0")
+set(PKGUNBOX_VERSION "2.0.0")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -51,6 +51,7 @@ if(BUILD_GUI)
 		gui/main_window.cpp
 		gui/extract_worker.cpp
 		gui/settings_manager.cpp
+		gui/toml_parser.cpp
 		gui/resources/resources.qrc
 	)
 

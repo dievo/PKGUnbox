@@ -8,6 +8,8 @@
 #include <QProgressBar>
 #include <QFrame>
 #include <QComboBox>
+#include <QListWidget>
+#include <QStringList>
 #include "extract_worker.h"
 #include "settings_manager.h"
 
@@ -24,8 +26,8 @@ protected:
 	bool eventFilter(QObject *obj, QEvent *event) override;
 
 private slots:
-	void onSelectFile();
-	void onClearFile();
+	void onSelectFiles();
+	void onClearFiles();
 	void onSelectGamesDir();
 	void onSelectAddonsDir();
 	void onStartExtraction();
@@ -36,17 +38,22 @@ private slots:
 	void onExtractionFinished(int returnCode);
 	void onLanguageChanged(int index);
 	void onCopyLog();
+	void onDetectShadPS4();
 
 private:
 	void setupUI();
 	void loadSettings();
 	void setExtractionActive(bool active);
-	void setFileSelected(const QString &path);
-	void setFileCleared();
+	void addFilesToList(const QStringList &paths);
+	void clearFileList();
+	void updateFileListDisplay();
 	void retranslateUI();
 
 	// Icon factory
 	QIcon makeIcon(const QString &type, const QColor &color, const QColor &disabledColor = QColor());
+
+	// Get PKG type name for display
+	QString getPkgTypeName(int typeCode) const;
 
 	// Drop zone / file display
 	QWidget *m_dropZone;
@@ -54,10 +61,11 @@ private:
 	QLabel *m_dropText;
 	QLabel *m_dropSubtext;
 
-	// File selected display
-	QWidget *m_fileDisplay;
-	QLineEdit *m_fileInput;
-	QPushButton *m_clearFileBtn;
+	// File list display (multi-file support)
+	QWidget *m_fileListWidget;
+	QListWidget *m_fileList;
+	QLabel *m_fileCountLabel;
+	QPushButton *m_clearFilesBtn;
 
 	QLineEdit *m_gamesDirInput;
 	QLineEdit *m_addonsDirInput;
@@ -66,6 +74,7 @@ private:
 	QPushButton *m_extractBtn;
 	QPushButton *m_cancelBtn;
 	QPushButton *m_saveBtn;
+	QPushButton *m_detectShadPS4Btn;
 	QTextEdit *m_logArea;
 	QLabel *m_statusLabel;
 	QProgressBar *m_progressBar;
@@ -77,6 +86,9 @@ private:
 	QLabel *m_lblAddons;
 	QLabel *m_logTitleLabel;
 	QLabel *m_langLabel;
+
+	// Selected files
+	QStringList m_selectedFiles;
 
 	ExtractWorker *m_worker;
 	SettingsManager *m_settings;

@@ -139,7 +139,7 @@ QIcon MainWindow::makeIcon(const QString &type, const QColor &color, const QColo
 
 void MainWindow::setupUI() {
 	setWindowTitle(QString("PKGUnbox - v%1").arg(PKGUNBOX_VERSION));
-	setMinimumSize(640, 480);
+	setMinimumSize(700, 580);
 	setAcceptDrops(true);
 
 	// Window icon
@@ -159,6 +159,7 @@ void MainWindow::setupUI() {
 	QColor colExtract("#5865f2");    // Blurple — extract (primary)
 	QColor colSave("#22c55e");       // Green — save (positive)
 	QColor colCancel("#f7768e");     // Red — cancel/danger
+	QColor colDetect("#f0c674");     // Yellow — detect shadPS4
 
 	auto *central = new QWidget(this);
 	setCentralWidget(central);
@@ -184,12 +185,12 @@ void MainWindow::setupUI() {
 	m_dropIcon->setAlignment(Qt::AlignCenter);
 	dropLayout->addWidget(m_dropIcon);
 
-	m_dropText = new QLabel(tr("Drag a .pkg file here"));
+	m_dropText = new QLabel(tr("Drag .pkg files here"));
 	m_dropText->setObjectName("dropText");
 	m_dropText->setAlignment(Qt::AlignCenter);
 	dropLayout->addWidget(m_dropText);
 
-	m_dropSubtext = new QLabel(tr("or click to browse"));
+	m_dropSubtext = new QLabel(tr("or click to browse (multiple files supported)"));
 	m_dropSubtext->setObjectName("dropSubtext");
 	m_dropSubtext->setAlignment(Qt::AlignCenter);
 	dropLayout->addWidget(m_dropSubtext);
@@ -197,29 +198,37 @@ void MainWindow::setupUI() {
 	mainLayout->addWidget(m_dropZone);
 
 	// ========================================
-	// === File Selected (hidden by default)
+	// === File List (hidden by default, shows selected files)
 	// ========================================
-	m_fileDisplay = new QWidget();
-	m_fileDisplay->setVisible(false);
-	auto *fileRow = new QHBoxLayout(m_fileDisplay);
-	fileRow->setContentsMargins(0, 0, 0, 0);
-	fileRow->setSpacing(6);
+	m_fileListWidget = new QWidget();
+	m_fileListWidget->setVisible(false);
+	auto *fileListLayout = new QVBoxLayout(m_fileListWidget);
+	fileListLayout->setContentsMargins(0, 0, 0, 0);
+	fileListLayout->setSpacing(4);
 
-	m_fileInput = new QLineEdit();
-	m_fileInput->setReadOnly(true);
-	m_fileInput->setMinimumHeight(32);
-	m_fileInput->setPlaceholderText(tr("No file selected"));
-	fileRow->addWidget(m_fileInput, 1);
+	// Header row with count and clear button
+	auto *fileListHeader = new QHBoxLayout();
+	m_fileCountLabel = new QLabel(tr("Selected Files (0)"));
+	m_fileCountLabel->setObjectName("fileCountLabel");
+	fileListHeader->addWidget(m_fileCountLabel);
+	fileListHeader->addStretch();
 
-	m_clearFileBtn = new QPushButton();
-	m_clearFileBtn->setIcon(makeIcon("cancel", QColor("#ffffff")));
-	m_clearFileBtn->setObjectName("clearFileBtn");
-	m_clearFileBtn->setFixedSize(28, 28);
-	m_clearFileBtn->setToolTip(tr("Clear selected file"));
-	connect(m_clearFileBtn, &QPushButton::clicked, this, &MainWindow::onClearFile);
-	fileRow->addWidget(m_clearFileBtn, 0);
+	m_clearFilesBtn = new QPushButton(tr("Clear All"));
+	m_clearFilesBtn->setObjectName("clearFilesBtn");
+	m_clearFilesBtn->setToolTip(tr("Clear all selected files"));
+	connect(m_clearFilesBtn, &QPushButton::clicked, this, &MainWindow::onClearFiles);
+	fileListHeader->addWidget(m_clearFilesBtn);
 
-	mainLayout->addWidget(m_fileDisplay);
+	fileListLayout->addLayout(fileListHeader);
+
+	// File list widget
+	m_fileList = new QListWidget();
+	m_fileList->setObjectName("fileList");
+	m_fileList->setMinimumHeight(100);
+	m_fileList->setMaximumHeight(150);
+	fileListLayout->addWidget(m_fileList);
+
+	mainLayout->addWidget(m_fileListWidget);
 
 	// ========================================
 	// === Destination Directories + Save
@@ -238,6 +247,19 @@ void MainWindow::setupUI() {
 	m_dirTitleLabel = dirTitleLabel;
 	dirTitleBar->addWidget(dirTitleLabel);
 	dirTitleBar->addStretch();
+
+	m_detectShadPS4Btn = new QPushButton();
+	m_detectShadPS4Btn->setIcon(makeIcon("check", colDetect));
+	m_detectShadPS4Btn->setText(tr("Auto-detect"));
+	m_detectShadPS4Btn->setObjectName("detectBtn");
+	m_detectShadPS4Btn->setFixedHeight(24);
+	m_detectShadPS4Btn->setToolTip(tr("Auto-detect shadPS4 installation and configure directories"));
+	connect(m_detectShadPS4Btn, &QPushButton::clicked, this, &MainWindow::onDetectShadPS4);
+	dirTitleBar->addWidget(m_detectShadPS4Btn);
+
+	// Spacer between Detect and Save buttons
+	auto *btnSpacer = new QSpacerItem(8, 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
+	dirTitleBar->addSpacerItem(btnSpacer);
 
 	m_saveBtn = new QPushButton();
 	m_saveBtn->setIcon(makeIcon("settings", colSave));
@@ -415,7 +437,8 @@ void MainWindow::setExtractionActive(bool active) {
 	m_selectGamesDirBtn->setEnabled(!active);
 	m_selectAddonsDirBtn->setEnabled(!active);
 	m_saveBtn->setEnabled(!active);
-	m_clearFileBtn->setEnabled(!active);
+	m_clearFilesBtn->setEnabled(!active);
+	m_detectShadPS4Btn->setEnabled(!active);
 
 	if (active) {
 		m_progressBar->setValue(0);
@@ -426,17 +449,40 @@ void MainWindow::setExtractionActive(bool active) {
 	}
 }
 
-void MainWindow::setFileSelected(const QString &path) {
-	m_fileInput->setText(path);
-	m_fileDisplay->setVisible(true);
-	m_dropZone->setVisible(false);
-	m_extractBtn->setEnabled(true);
-	m_statusLabel->setText(tr("File: %1").arg(QFileInfo(path).fileName()));
+// ========================================
+// === File Selection (Multi-file support)
+// ========================================
+
+void MainWindow::onSelectFiles() {
+	QStringList paths = QFileDialog::getOpenFileNames(
+		this, tr("Select PKG files"), "",
+		tr("PKG files (*.pkg);;All files (*)")
+	);
+	if (!paths.isEmpty()) {
+		addFilesToList(paths);
+	}
 }
 
-void MainWindow::setFileCleared() {
-	m_fileInput->clear();
-	m_fileDisplay->setVisible(false);
+void MainWindow::onClearFiles() {
+	clearFileList();
+}
+
+void MainWindow::addFilesToList(const QStringList &paths) {
+	for (const QString &path : paths) {
+		// Avoid duplicates
+		if (!m_selectedFiles.contains(path)) {
+			m_selectedFiles.append(path);
+		}
+	}
+	updateFileListDisplay();
+}
+
+void MainWindow::clearFileList() {
+	m_selectedFiles.clear();
+	updateFileListDisplay();
+
+	// Show drop zone, hide file list
+	m_fileListWidget->setVisible(false);
 	m_dropZone->setVisible(true);
 	m_extractBtn->setEnabled(false);
 	m_statusLabel->setText(tr("Ready"));
@@ -446,22 +492,55 @@ void MainWindow::setFileCleared() {
 	m_progressBar->style()->polish(m_progressBar);
 }
 
-// ========================================
-// === File Selection
-// ========================================
+void MainWindow::updateFileListDisplay() {
+	m_fileList->clear();
 
-void MainWindow::onSelectFile() {
-	QString path = QFileDialog::getOpenFileName(
-		this, tr("Select PKG file"), "",
-		tr("PKG files (*.pkg);;All files (*)")
-	);
-	if (!path.isEmpty()) {
-		setFileSelected(path);
+	if (m_selectedFiles.isEmpty()) {
+		m_fileCountLabel->setText(tr("Selected Files (0)"));
+		return;
 	}
-}
 
-void MainWindow::onClearFile() {
-	setFileCleared();
+	m_fileCountLabel->setText(tr("Selected Files (%1)").arg(m_selectedFiles.size()));
+
+	for (const QString &path : m_selectedFiles) {
+		QFileInfo info(path);
+		QString fileName = info.fileName();
+		QString sizeStr;
+
+		qint64 size = info.size();
+		if (size >= 1073741824LL) {
+			sizeStr = QString("%1 GB").arg(size / 1073741824.0, 0, 'f', 1);
+		} else if (size >= 1048576LL) {
+			sizeStr = QString("%1 MB").arg(size / 1048576.0, 0, 'f', 1);
+		} else {
+			sizeStr = QString("%1 KB").arg(size / 1024.0, 0, 'f', 1);
+		}
+
+		// Add item with icon and info
+		QListWidgetItem *item = new QListWidgetItem();
+		item->setText(fileName);
+		item->setToolTip(path);
+		item->setData(Qt::UserRole, path);
+
+		// Set icon based on file type
+		QFileInfo fileInfo(path);
+		if (fileInfo.suffix().toLower() == "pkg") {
+			item->setIcon(makeIcon("box", QColor("#7aa2f7")));
+		} else {
+			item->setIcon(makeIcon("file", QColor("#cdd6f4")));
+		}
+
+		// Set status tip with size
+		item->setStatusTip(sizeStr);
+
+		m_fileList->addItem(item);
+	}
+
+	// Show file list, hide drop zone
+	m_fileListWidget->setVisible(true);
+	m_dropZone->setVisible(false);
+	m_extractBtn->setEnabled(true);
+	m_statusLabel->setText(tr("%1 file(s) selected").arg(m_selectedFiles.size()));
 }
 
 void MainWindow::onSelectGamesDir() {
@@ -483,13 +562,12 @@ void MainWindow::onSelectAddonsDir() {
 }
 
 // ========================================
-// === Extraction
+// === Extraction (Batch support)
 // ========================================
 
 void MainWindow::onStartExtraction() {
-	QString pkgPath = m_fileInput->text();
-	if (pkgPath.isEmpty()) {
-		QMessageBox::warning(this, tr("Warning"), tr("Please select a PKG file."));
+	if (m_selectedFiles.isEmpty()) {
+		QMessageBox::warning(this, tr("Warning"), tr("Please select PKG file(s)."));
 		return;
 	}
 
@@ -502,11 +580,14 @@ void MainWindow::onStartExtraction() {
 	setExtractionActive(true);
 
 	m_logArea->append("======================================");
-	m_logArea->append(QString("Starting: %1").arg(QFileInfo(pkgPath).fileName()));
-	m_logArea->append(QString("Destination: %1").arg(gamesDir));
+	m_logArea->append(QString("Starting batch extraction: %1 file(s)").arg(m_selectedFiles.size()));
+	m_logArea->append(QString("Games directory: %1").arg(gamesDir));
+	if (!m_addonsDirInput->text().isEmpty()) {
+		m_logArea->append(QString("DLCs directory: %1").arg(m_addonsDirInput->text()));
+	}
 	m_logArea->append("======================================");
 
-	m_worker = new ExtractWorker(pkgPath, gamesDir, m_addonsDirInput->text(), this);
+	m_worker = new ExtractWorker(m_selectedFiles, gamesDir, m_addonsDirInput->text(), this);
 	connect(m_worker, &ExtractWorker::log, this, &MainWindow::onExtractionLog);
 	connect(m_worker, &ExtractWorker::progress, this, &MainWindow::onExtractionProgress);
 	connect(m_worker, &ExtractWorker::finished, this, &MainWindow::onExtractionFinished);
@@ -537,6 +618,47 @@ void MainWindow::onCopyLog() {
 	QClipboard *clipboard = QApplication::clipboard();
 	clipboard->setText(m_logArea->toPlainText());
 	m_statusLabel->setText(tr("Log copied to clipboard!"));
+}
+
+// ========================================
+// === shadPS4 Auto-Detection
+// ========================================
+
+void MainWindow::onDetectShadPS4() {
+	ShadPS4Config config = m_settings->detectShadPS4();
+
+	if (config.found) {
+		// Apply detected directories
+		if (!config.gamesDir.isEmpty()) {
+			m_gamesDirInput->setText(config.gamesDir);
+		}
+		if (!config.addonsDir.isEmpty()) {
+			m_addonsDirInput->setText(config.addonsDir);
+		}
+
+		m_statusLabel->setText(tr("shadPS4 detected! Directories configured."));
+		m_logArea->append("======================================");
+		m_logArea->append(tr("shadPS4 detected!"));
+		m_logArea->append(tr("Config: %1").arg(config.configPath));
+		if (!config.gamesDir.isEmpty()) {
+			m_logArea->append(tr("Games: %1").arg(config.gamesDir));
+		}
+		if (!config.addonsDir.isEmpty()) {
+			m_logArea->append(tr("DLCs: %1").arg(config.addonsDir));
+		}
+		m_logArea->append("======================================");
+	} else {
+		m_statusLabel->setText(tr("shadPS4 not found. Configure directories manually."));
+		m_logArea->append(tr("shadPS4 config.toml not found."));
+		m_logArea->append(tr("Expected locations:"));
+		#ifdef Q_OS_LINUX
+		m_logArea->append(tr("  ~/.config/shadPS4/config.toml"));
+		#elif defined(Q_OS_WIN)
+		m_logArea->append(tr("  %%APPDATA%%/shadPS4/config.toml"));
+		#elif defined(Q_OS_MAC)
+		m_logArea->append(tr("  ~/Library/Application Support/shadPS4/config.toml"));
+		#endif
+	}
 }
 
 void MainWindow::onExtractionProgress(int current, int total) {
@@ -651,10 +773,11 @@ void MainWindow::onLanguageChanged(int index) {
 
 void MainWindow::retranslateUI() {
 	setWindowTitle(QString("PKGUnbox - v%1").arg(PKGUNBOX_VERSION));
-	m_dropText->setText(tr("Drag a .pkg file here"));
-	m_dropSubtext->setText(tr("or click to browse"));
-	m_fileInput->setPlaceholderText(tr("No file selected"));
-	m_clearFileBtn->setToolTip(tr("Clear selected file"));
+	m_dropText->setText(tr("Drag .pkg files here"));
+	m_dropSubtext->setText(tr("or click to browse (multiple files supported)"));
+	m_fileCountLabel->setText(tr("Selected Files (%1)").arg(m_selectedFiles.size()));
+	m_clearFilesBtn->setText(tr("Clear All"));
+	m_clearFilesBtn->setToolTip(tr("Clear all selected files"));
 
 	// Dir section
 	m_dirTitleLabel->setText(tr("Destination"));
@@ -664,9 +787,11 @@ void MainWindow::retranslateUI() {
 	m_saveBtn->setToolTip(tr("Save destination settings"));
 	m_selectGamesDirBtn->setToolTip(tr("Select games directory"));
 	m_selectAddonsDirBtn->setToolTip(tr("Select DLCs/Updates directory"));
+	m_detectShadPS4Btn->setText(tr("Auto-detect"));
+	m_detectShadPS4Btn->setToolTip(tr("Auto-detect shadPS4 installation and configure directories"));
 
-	m_extractBtn->setText(tr("Extract"));
-	m_extractBtn->setToolTip(tr("Start PKG extraction"));
+	m_extractBtn->setText(tr("Extract All"));
+	m_extractBtn->setToolTip(tr("Start batch extraction"));
 	m_cancelBtn->setText(tr("Cancel"));
 
 	m_logTitleLabel->setText(tr("Log"));
@@ -687,7 +812,7 @@ void MainWindow::retranslateUI() {
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
 	if (obj == m_dropZone && event->type() == QEvent::MouseButtonRelease) {
-		onSelectFile();
+		onSelectFiles();
 		return true;
 	}
 	return QMainWindow::eventFilter(obj, event);
@@ -709,11 +834,14 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event) {
 }
 
 void MainWindow::dropEvent(QDropEvent *event) {
+	QStringList pkgFiles;
 	for (const auto &url : event->mimeData()->urls()) {
 		QString path = url.toLocalFile();
 		if (path.toLower().endsWith(".pkg")) {
-			setFileSelected(path);
-			return;
+			pkgFiles.append(path);
 		}
+	}
+	if (!pkgFiles.isEmpty()) {
+		addFilesToList(pkgFiles);
 	}
 }

@@ -2,52 +2,117 @@
 #include <QProcess>
 #include <QCoreApplication>
 #include <QRegularExpression>
+#include <QFileInfo>
 
 ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &gamesDir, const QString &addonsDir, QObject *parent)
 	: QThread(parent)
-	, m_pkgPath(pkgPath)
+	, m_pkgPaths(QStringList() << pkgPath)
+	, m_gamesDir(gamesDir)
+	, m_addonsDir(addonsDir)
+{}
+
+ExtractWorker::ExtractWorker(const QStringList &pkgPaths, const QString &gamesDir, const QString &addonsDir, QObject *parent)
+	: QThread(parent)
+	, m_pkgPaths(pkgPaths)
 	, m_gamesDir(gamesDir)
 	, m_addonsDir(addonsDir)
 {}
 
 void ExtractWorker::run() {
-	QString cliPath = QCoreApplication::applicationDirPath() + "/pkgunbox";
+	int totalFiles = m_pkgPaths.size();
+	int successCount = 0;
+	int failCount = 0;
 
-	emit log(QString(">>> Checking type: %1").arg(m_pkgPath));
-
-	QProcess checkType;
-	checkType.start(cliPath, {m_pkgPath, "--check-type"});
-	checkType.waitForFinished(60000);
-
-	int ret = checkType.exitCode();
-	emit log(QString("    Code: %1").arg(ret));
-
-	if (ret == 0) {
-		emit log("!!! Error: not a valid PKG.");
+	if (totalFiles == 0) {
+		emit log("!!! No files to extract.");
 		emit finished(-1);
 		return;
 	}
 
-	if (ret == 101) {
-		emit log(">>> Type: Base game");
-	} else if (ret == 102) {
-		emit log(">>> Type: Update");
-	} else if (ret == 103) {
-		emit log(">>> Type: DLC");
+	// Single file mode
+	if (totalFiles == 1) {
+		int ret = extractSingle(m_pkgPaths.first(), m_gamesDir, m_addonsDir);
+		emit finished(ret);
+		return;
 	}
+
+	// Batch mode
+	emit log(QString(">>> Batch extraction: %1 file(s)").arg(totalFiles));
+	emit log("======================================");
+
+	for (int i = 0; i < totalFiles; ++i) {
+		// Check if thread was requested to stop
+		if (isInterruptionRequested()) {
+			emit log("\n>>> Batch extraction canceled by user.");
+			break;
+		}
+
+		emit log(QString("\n>>> [%1/%2] Processing: %3")
+			.arg(i + 1)
+			.arg(totalFiles)
+			.arg(QFileInfo(m_pkgPaths[i]).fileName()));
+
+		// Emit batch progress
+		emit batchProgress(i + 1, totalFiles);
+
+		int ret = extractSingle(m_pkgPaths[i], m_gamesDir, m_addonsDir);
+
+		if (ret == 0) {
+			successCount++;
+		} else {
+			failCount++;
+		}
+	}
+
+	emit log("\n======================================");
+	emit log(QString(">>> Batch complete: %1 succeeded, %2 failed")
+		.arg(successCount)
+		.arg(failCount));
+	emit log("======================================");
+
+	// Return 0 if all succeeded, 1 if any failed
+	emit finished(failCount == 0 ? 0 : 1);
+}
+
+int ExtractWorker::extractSingle(const QString &pkgPath, const QString &gamesDir, const QString &addonsDir) {
+	QString cliPath = QCoreApplication::applicationDirPath() + "/pkgunbox";
+
+	emit log(QString("    Checking type: %1").arg(QFileInfo(pkgPath).fileName()));
+
+	QProcess checkType;
+	checkType.start(cliPath, {pkgPath, "--check-type"});
+	checkType.waitForFinished(60000);
+
+	int ret = checkType.exitCode();
+	emit log(QString("    Type code: %1").arg(ret));
+
+	if (ret == 0) {
+		emit log("    !!! Error: not a valid PKG.");
+		return -1;
+	}
+
+	QString typeName;
+	if (ret == 101) {
+		typeName = "Base Game";
+	} else if (ret == 102) {
+		typeName = "Update";
+	} else if (ret == 103) {
+		typeName = "DLC";
+	}
+	emit log(QString("    Type: %1").arg(typeName));
 
 	// Route to correct directory based on type
-	QString extractDir = m_gamesDir;
-	if (ret == 103 && !m_addonsDir.isEmpty()) {
-		extractDir = m_addonsDir;
-		emit log(QString(">>> DLC detected, using addons directory: %1").arg(extractDir));
+	QString extractDir = gamesDir;
+	if (ret == 103 && !addonsDir.isEmpty()) {
+		extractDir = addonsDir;
+		emit log(QString("    DLC detected, using addons directory: %1").arg(extractDir));
 	}
 
-	emit log(QString(">>> Extracting to: %1").arg(extractDir));
+	emit log(QString("    Extracting to: %1").arg(extractDir));
 
 	QProcess extract;
 	extract.setProcessChannelMode(QProcess::MergedChannels);
-	extract.start(cliPath, {m_pkgPath, extractDir});
+	extract.start(cliPath, {pkgPath, extractDir});
 
 	QRegularExpression progressRegex(R"(Extracting file (\d+) of (\d+))");
 	QString buffer;
@@ -75,7 +140,7 @@ void ExtractWorker::run() {
 				int total = match.captured(2).toInt();
 				emit progress(current, total);
 			} else {
-				emit log("    " + line);
+				emit log("        " + line);
 			}
 		}
 
@@ -97,17 +162,17 @@ void ExtractWorker::run() {
 		buffer += QString::fromUtf8(remaining);
 		QStringList lines = buffer.split('\n', Qt::SkipEmptyParts);
 		for (const QString &line : lines) {
-			emit log("    " + line.trimmed());
+			emit log("        " + line.trimmed());
 		}
 	}
 
 	int finalRet = extract.exitCode();
 
 	if (finalRet == 0) {
-		emit log(">>> Extraction completed successfully!");
+		emit log("    ✓ Extraction completed successfully!");
 	} else {
-		emit log(QString("!!! Error (code %1)").arg(finalRet));
+		emit log(QString("    ✗ Error (code %1)").arg(finalRet));
 	}
 
-	emit finished(finalRet);
+	return finalRet;
 }
