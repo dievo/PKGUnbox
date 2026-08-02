@@ -128,8 +128,8 @@
         <translation>Directorio de DLCs: %1</translation>
     </message>
     <message>
-        <source>shadPS4 detected! Directories configured.</source>
-        <translation>shadPS4 detectado! Directorios configurados.</translation>
+        <source>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; shadPS4 detected! Directories configured.</source>
+        <translation>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; ¡shadPS4 detectado! Directorios configurados.</translation>
     </message>
     <message>
         <source>shadPS4 detected!</source>
@@ -148,8 +148,8 @@
         <translation>DLCs: %1</translation>
     </message>
     <message>
-        <source>shadPS4 not found. Configure directories manually.</source>
-        <translation>shadPS4 no encontrado. Configure los directorios manualmente.</translation>
+        <source>&lt;span style='color:#ef4444;'&gt;✘&lt;/span&gt; shadPS4 not found. Configure directories manually.</source>
+        <translation>&lt;span style='color:#ef4444;'&gt;✘&lt;/span&gt; ¡shadPS4 no encontrado! Configure los directorios manualmente.</translation>
     </message>
     <message>
         <source>shadPS4 config.json not found.</source>
@@ -188,8 +188,8 @@
         <translation>Fallo (código %1)</translation>
     </message>
     <message>
-        <source>Settings saved!</source>
-        <translation>Configuración guardada!</translation>
+        <source>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; Settings saved!</source>
+        <translation>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; ¡Configuración guardada!</translation>
     </message>
     <message>
         <source>PKGUnbox</source>

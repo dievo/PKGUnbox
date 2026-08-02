@@ -17,6 +17,7 @@
 #include <QPainterPath>
 #include <QTranslator>
 #include <QDebug>
+#include <QTimer>
 #include <cmath>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -674,15 +675,25 @@ void MainWindow::onDetectShadPS4() {
 	ShadPS4Config config = m_settings->detectShadPS4();
 
 	if (config.found) {
-		// Apply detected directories
+		// Apply detected directories with visual feedback
 		if (!config.gamesDir.isEmpty()) {
 			m_gamesDirInput->setText(config.gamesDir);
+			// Highlight field briefly
+			m_gamesDirInput->setStyleSheet("QLineEdit { background-color: rgba(34, 197, 94, 0.3); }");
+			QTimer::singleShot(1500, m_gamesDirInput, [this]() {
+				m_gamesDirInput->setStyleSheet("");
+			});
 		}
 		if (!config.addonsDir.isEmpty()) {
 			m_addonsDirInput->setText(config.addonsDir);
+			// Highlight field briefly
+			m_addonsDirInput->setStyleSheet("QLineEdit { background-color: rgba(34, 197, 94, 0.3); }");
+			QTimer::singleShot(1500, m_addonsDirInput, [this]() {
+				m_addonsDirInput->setStyleSheet("");
+			});
 		}
 
-		m_statusLabel->setText(tr("shadPS4 detected! Directories configured."));
+		m_statusLabel->setText(tr("<span style='color:#22c55e;'>✔</span> shadPS4 detected! Directories configured."));
 		m_logArea->append("======================================");
 		m_logArea->append(tr("shadPS4 detected!"));
 		m_logArea->append(tr("Config: %1").arg(config.configPath));
@@ -694,7 +705,7 @@ void MainWindow::onDetectShadPS4() {
 		}
 		m_logArea->append("======================================");
 	} else {
-		m_statusLabel->setText(tr("shadPS4 not found. Configure directories manually."));
+		m_statusLabel->setText(tr("<span style='color:#ef4444;'>✘</span> shadPS4 not found. Configure directories manually."));
 		m_logArea->append(tr("shadPS4 config.json not found."));
 		m_logArea->append(tr("Expected locations:"));
 		#ifdef Q_OS_LINUX
@@ -746,7 +757,7 @@ void MainWindow::onSaveSettings() {
 	m_settings->setGamesDir(m_gamesDirInput->text());
 	m_settings->setAddonsDir(m_addonsDirInput->text());
 	m_settings->setLanguage(m_languageCombo->currentData().toString());
-	m_statusLabel->setText(tr("Settings saved!"));
+	m_statusLabel->setText(tr("<span style='color:#22c55e;'>✔</span> Settings saved!"));
 }
 
 // ========================================
