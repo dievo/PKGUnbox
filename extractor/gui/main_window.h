@@ -34,7 +34,8 @@ private slots:
 	void onCancelExtraction();
 	void onSaveSettings();
 	void onExtractionLog(const QString &message);
-	void onExtractionProgress(int current, int total);
+	void onOverallProgress(int percent);
+	void onBatchProgress(int currentFile, int totalFiles);
 	void onExtractionFinished(int returnCode);
 	void onLanguageChanged(int index);
 	void onCopyLog();

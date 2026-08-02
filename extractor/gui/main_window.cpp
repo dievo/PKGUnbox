@@ -629,7 +629,8 @@ void MainWindow::onStartExtraction() {
 
 	m_worker = new ExtractWorker(m_selectedFiles, gamesDir, m_addonsDirInput->text(), this);
 	connect(m_worker, &ExtractWorker::log, this, &MainWindow::onExtractionLog);
-	connect(m_worker, &ExtractWorker::progress, this, &MainWindow::onExtractionProgress);
+	connect(m_worker, &ExtractWorker::overallProgress, this, &MainWindow::onOverallProgress);
+	connect(m_worker, &ExtractWorker::batchProgress, this, &MainWindow::onBatchProgress);
 	connect(m_worker, &ExtractWorker::finished, this, &MainWindow::onExtractionFinished);
 	m_worker->start();
 }
@@ -701,15 +702,15 @@ void MainWindow::onDetectShadPS4() {
 	}
 }
 
-void MainWindow::onExtractionProgress(int current, int total) {
-	if (total > 0) {
-		int percent = static_cast<int>((static_cast<double>(current) / total) * 100);
-		m_progressBar->setValue(percent);
-		m_progressBar->setProperty("complete", percent >= 100);
-		m_progressBar->style()->unpolish(m_progressBar);
-		m_progressBar->style()->polish(m_progressBar);
-		m_statusLabel->setText(QString("%1 / %2 (%3%)").arg(current).arg(total).arg(percent));
-	}
+void MainWindow::onOverallProgress(int percent) {
+	m_progressBar->setValue(percent);
+	m_progressBar->setProperty("complete", percent >= 100);
+	m_progressBar->style()->unpolish(m_progressBar);
+	m_progressBar->style()->polish(m_progressBar);
+}
+
+void MainWindow::onBatchProgress(int currentFile, int totalFiles) {
+	m_statusLabel->setText(tr("Extracting file %1/%2...").arg(currentFile).arg(totalFiles));
 }
 
 void MainWindow::onExtractionFinished(int returnCode) {

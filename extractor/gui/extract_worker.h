@@ -20,6 +20,7 @@ signals:
 	void log(const QString &message);
 	void progress(int current, int total);
 	void batchProgress(int currentFile, int totalFiles);
+	void overallProgress(int percent);
 	void finished(int returnCode);
 
 private:
@@ -29,4 +30,6 @@ private:
 	QStringList m_pkgPaths;
 	QString m_gamesDir;
 	QString m_addonsDir;
+	int m_batchTotalFiles = 0;
+	int m_batchCompletedFiles = 0;
 };

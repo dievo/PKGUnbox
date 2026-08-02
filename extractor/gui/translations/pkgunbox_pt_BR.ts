@@ -208,6 +208,10 @@
         <translation>Log copiado para a área de transferência!</translation>
     </message>
     <message>
+        <source>Extracting file %1/%2...</source>
+        <translation>Extraindo arquivo %1/%2...</translation>
+    </message>
+    <message>
         <source>Remove file</source>
         <translation>Remover arquivo</translation>
     </message>

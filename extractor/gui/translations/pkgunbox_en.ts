@@ -208,6 +208,10 @@
         <translation>Log copied to clipboard!</translation>
     </message>
     <message>
+        <source>Extracting file %1/%2...</source>
+        <translation>Extracting file %1/%2...</translation>
+    </message>
+    <message>
         <source>Remove file</source>
         <translation>Remove file</translation>
     </message>

@@ -208,6 +208,10 @@
         <translation>Registro copiado al portapapeles!</translation>
     </message>
     <message>
+        <source>Extracting file %1/%2...</source>
+        <translation>Extrayendo archivo %1/%2...</translation>
+    </message>
+    <message>
         <source>Remove file</source>
         <translation>Eliminar archivo</translation>
     </message>

@@ -22,6 +22,8 @@ void ExtractWorker::run() {
 	int totalFiles = m_pkgPaths.size();
 	int successCount = 0;
 	int failCount = 0;
+	m_batchTotalFiles = totalFiles;
+	m_batchCompletedFiles = 0;
 
 	if (totalFiles == 0) {
 		emit log("!!! No files to extract.");
@@ -46,6 +48,8 @@ void ExtractWorker::run() {
 			emit log("\n>>> Batch extraction canceled by user.");
 			break;
 		}
+
+		m_batchCompletedFiles = i;
 
 		emit log(QString("\n>>> [%1/%2] Processing: %3")
 			.arg(i + 1)
@@ -139,6 +143,11 @@ int ExtractWorker::extractSingle(const QString &pkgPath, const QString &gamesDir
 				int current = match.captured(1).toInt();
 				int total = match.captured(2).toInt();
 				emit progress(current, total);
+				if (m_batchTotalFiles > 0 && total > 0) {
+					double fileProgress = static_cast<double>(current) / total;
+					int overall = static_cast<int>((m_batchCompletedFiles + fileProgress) / m_batchTotalFiles * 100.0);
+					emit overallProgress(qBound(0, overall, 100));
+				}
 			} else {
 				emit log("        " + line);
 			}
@@ -150,6 +159,11 @@ int ExtractWorker::extractSingle(const QString &pkgPath, const QString &gamesDir
 				int current = match.captured(1).toInt();
 				int total = match.captured(2).toInt();
 				emit progress(current, total);
+				if (m_batchTotalFiles > 0 && total > 0) {
+					double fileProgress = static_cast<double>(current) / total;
+					int overall = static_cast<int>((m_batchCompletedFiles + fileProgress) / m_batchTotalFiles * 100.0);
+					emit overallProgress(qBound(0, overall, 100));
+				}
 				buffer.clear();
 			}
 		}
