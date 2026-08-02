@@ -36,32 +36,32 @@
         <translation>Salvar</translation>
     </message>
     <message>
-        <source>Save destination settings</source>
-        <translation>Salvar as configurações de destino</translation>
+        <source>Click to save destination settings</source>
+        <translation>Clique para salvar as configurações de destino</translation>
     </message>
     <message>
-        <source>Auto-detect</source>
-        <translation>Auto-detectar</translation>
+        <source>Auto-detect shadPS4</source>
+        <translation>Auto-detectar shadPS4</translation>
     </message>
     <message>
-        <source>Auto-detect shadPS4 installation and configure directories</source>
-        <translation>Auto-detectar instalação do shadPS4 e configurar diretórios</translation>
+        <source>Click to auto-detect shadPS4 installation and configure directories</source>
+        <translation>Clique para auto-detectar a instalação do shadPS4 e configurar os diretórios</translation>
     </message>
     <message>
         <source>Games:</source>
         <translation>Jogos:</translation>
     </message>
     <message>
-        <source>Select games directory</source>
-        <translation>Selecionar diretório de jogos</translation>
+        <source>Click to select games directory</source>
+        <translation>Clique para selecionar o diretório de jogos</translation>
     </message>
     <message>
         <source>DLCs:</source>
         <translation>DLCs:</translation>
     </message>
     <message>
-        <source>Select DLCs/Updates directory</source>
-        <translation>Selecionar diretório de DLCs/Updates</translation>
+        <source>Click to select DLCs directory</source>
+        <translation>Clique para selecionar o diretório de DLCs</translation>
     </message>
     <message>
         <source>Extract All</source>

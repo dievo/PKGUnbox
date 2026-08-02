@@ -111,6 +111,11 @@ QIcon MainWindow::makeIcon(const QString &type, const QColor &color, const QColo
 				int y2 = static_cast<int>(16 + 11 * sin(angle));
 				p.drawLine(x1, y1, x2, y2);
 			}
+		} else if (type == "search") {
+			// Magnifying glass — circle + handle
+			p.drawEllipse(5, 4, 16, 16);
+			p.setPen(QPen(c, 3.0));
+			p.drawLine(18, 17, 26, 26);
 		}
 	};
 
@@ -249,11 +254,11 @@ void MainWindow::setupUI() {
 	dirTitleBar->addStretch();
 
 	m_detectShadPS4Btn = new QPushButton();
-	m_detectShadPS4Btn->setIcon(makeIcon("check", colDetect));
-	m_detectShadPS4Btn->setText(tr("Auto-detect"));
+	m_detectShadPS4Btn->setIcon(makeIcon("search", colDetect));
+	m_detectShadPS4Btn->setText(tr("Auto-detect shadPS4"));
 	m_detectShadPS4Btn->setObjectName("detectBtn");
 	m_detectShadPS4Btn->setFixedHeight(24);
-	m_detectShadPS4Btn->setToolTip(tr("Auto-detect shadPS4 installation and configure directories"));
+	m_detectShadPS4Btn->setToolTip(tr("Click to auto-detect shadPS4 installation and configure directories"));
 	connect(m_detectShadPS4Btn, &QPushButton::clicked, this, &MainWindow::onDetectShadPS4);
 	dirTitleBar->addWidget(m_detectShadPS4Btn);
 
@@ -266,7 +271,7 @@ void MainWindow::setupUI() {
 	m_saveBtn->setText(tr("Save"));
 	m_saveBtn->setObjectName("saveBtn");
 	m_saveBtn->setFixedHeight(24);
-	m_saveBtn->setToolTip(tr("Save destination settings"));
+	m_saveBtn->setToolTip(tr("Click to save destination settings"));
 	connect(m_saveBtn, &QPushButton::clicked, this, &MainWindow::onSaveSettings);
 	dirTitleBar->addWidget(m_saveBtn);
 
@@ -291,7 +296,7 @@ void MainWindow::setupUI() {
 	m_selectGamesDirBtn->setIcon(makeIcon("folder", colGames));
 	m_selectGamesDirBtn->setObjectName("browseBtn");
 	m_selectGamesDirBtn->setFixedSize(30, 30);
-	m_selectGamesDirBtn->setToolTip(tr("Select games directory"));
+	m_selectGamesDirBtn->setToolTip(tr("Click to select games directory"));
 	connect(m_selectGamesDirBtn, &QPushButton::clicked, this, &MainWindow::onSelectGamesDir);
 	dirGrid->addWidget(m_selectGamesDirBtn, 0, 2);
 
@@ -309,7 +314,7 @@ void MainWindow::setupUI() {
 	m_selectAddonsDirBtn->setIcon(makeIcon("folder", colAddons));
 	m_selectAddonsDirBtn->setObjectName("browseBtn");
 	m_selectAddonsDirBtn->setFixedSize(30, 30);
-	m_selectAddonsDirBtn->setToolTip(tr("Select DLCs/Updates directory"));
+	m_selectAddonsDirBtn->setToolTip(tr("Click to select DLCs directory"));
 	connect(m_selectAddonsDirBtn, &QPushButton::clicked, this, &MainWindow::onSelectAddonsDir);
 	dirGrid->addWidget(m_selectAddonsDirBtn, 1, 2);
 
@@ -825,11 +830,11 @@ void MainWindow::retranslateUI() {
 	m_lblGames->setText(tr("Games:"));
 	m_lblAddons->setText(tr("DLCs:"));
 	m_saveBtn->setText(tr("Save"));
-	m_saveBtn->setToolTip(tr("Save destination settings"));
-	m_selectGamesDirBtn->setToolTip(tr("Select games directory"));
-	m_selectAddonsDirBtn->setToolTip(tr("Select DLCs/Updates directory"));
-	m_detectShadPS4Btn->setText(tr("Auto-detect"));
-	m_detectShadPS4Btn->setToolTip(tr("Auto-detect shadPS4 installation and configure directories"));
+	m_saveBtn->setToolTip(tr("Click to save destination settings"));
+	m_selectGamesDirBtn->setToolTip(tr("Click to select games directory"));
+	m_selectAddonsDirBtn->setToolTip(tr("Click to select DLCs directory"));
+	m_detectShadPS4Btn->setText(tr("Auto-detect shadPS4"));
+	m_detectShadPS4Btn->setToolTip(tr("Click to auto-detect shadPS4 installation and configure directories"));
 
 	m_extractBtn->setText(tr("Extract All"));
 	m_extractBtn->setToolTip(tr("Start batch extraction"));
