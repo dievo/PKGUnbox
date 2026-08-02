@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string_view>
+#include <vector>
 
 #include "common/path_util.h"
 #include "common/string_util.h"
@@ -19,12 +20,14 @@ static void PrintUsage(std::string_view programName) {
     std::cout << "PKGUnbox — PS4 PKG Extractor\n\n"
               << "Usage:\n"
               << "  " << programName << " <file.pkg> [output_dir]\n"
+              << "  " << programName << " <file1.pkg> <file2.pkg> ... [output_dir]\n"
               << "  " << programName << " <file.pkg> --check-type\n"
               << "  " << programName << " --help\n\n"
               << "Arguments:\n"
-              << "  file.pkg       Path to the PS4 .pkg file to extract\n"
-              << "  output_dir     Output directory (default: next to the .pkg file)\n"
+              << "  file.pkg       One or more PS4 .pkg files to extract\n"
+              << "  output_dir     Output directory (default: next to each .pkg file)\n"
               << "  --check-type   Print the package type and exit (base=101, patch=102, dlc=103)\n"
+              << "  --output DIR   Explicit output directory for all files\n"
               << "  --help         Show this help message\n\n"
               << "Exit codes:\n"
               << "  0   Success or no file provided\n"
@@ -42,30 +45,15 @@ static bool IsInteractive() {
 #endif
 }
 
-int main(int argc, char** argv) {
-    if (argc < 2) {
-        PrintUsage(argv[0]);
-        return 0;
-    }
+struct ExtractResult {
+    std::filesystem::path file;
+    bool success;
+    int type;
+};
 
-    std::string_view arg1 = argv[1];
-    if (arg1 == "--help" || arg1 == "-h") {
-        PrintUsage(argv[0]);
-        return 0;
-    }
-
-    std::filesystem::path file = argv[1];
-    std::filesystem::path output_folder_path;
-    bool checkTypeOnly = false;
-
-    if (argc > 2) {
-        if (std::string_view(argv[2]) == "--check-type") {
-            checkTypeOnly = true;
-        } else {
-            output_folder_path = argv[2];
-        }
-    }
-
+static int ExtractSingle(const std::filesystem::path& file,
+                         const std::filesystem::path& outputDir,
+                         bool checkTypeOnly) {
     // Detect file type
     if (Loader::DetectFileType(file) != Loader::FileTypes::Pkg) {
         std::cerr << "Error: " << file << " is not a valid PKG file\n";
@@ -88,6 +76,7 @@ int main(int argc, char** argv) {
     }
 
     // Determine output path from title ID
+    std::filesystem::path output_folder_path = outputDir;
     output_folder_path /= pkg.GetTitleID();
 
     // Detect package type
@@ -113,7 +102,7 @@ int main(int argc, char** argv) {
     }
 
     // Extract
-    std::cout << "Extracting " << file << " to " << output_folder_path << "\n";
+    std::cout << "  Target: " << output_folder_path << "\n";
 
     if (!pkg.Extract(file, output_folder_path, failreason)) {
         std::cerr << "Error: Cannot extract PKG: " << failreason << "\n";
@@ -126,12 +115,105 @@ int main(int argc, char** argv) {
         pkg.ExtractFiles(i);
     }
 
-    std::cout << "\nDone.\n";
+    std::cout << "\n";
+    return 0;
+}
+
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        PrintUsage(argv[0]);
+        return 0;
+    }
+
+    // Check for --help
+    for (int i = 1; i < argc; i++) {
+        if (std::string_view(argv[i]) == "--help" || std::string_view(argv[i]) == "-h") {
+            PrintUsage(argv[0]);
+            return 0;
+        }
+    }
+
+    // Parse arguments
+    std::vector<std::filesystem::path> pkgFiles;
+    std::filesystem::path outputDir;
+    bool checkTypeOnly = false;
+    bool hasExplicitOutput = false;
+
+    for (int i = 1; i < argc; i++) {
+        std::string_view arg = argv[i];
+
+        if (arg == "--check-type") {
+            checkTypeOnly = true;
+        } else if (arg == "--output") {
+            if (i + 1 < argc) {
+                outputDir = argv[++i];
+                hasExplicitOutput = true;
+            } else {
+                std::cerr << "Error: --output requires a directory argument\n";
+                return 1;
+            }
+        } else if (arg == "--help" || arg == "-h") {
+            // Already handled above
+        } else {
+            // Check if it's a directory (output_dir without --output flag)
+            std::filesystem::path p(arg);
+            if (std::filesystem::is_directory(p) && !hasExplicitOutput && pkgFiles.empty()) {
+                outputDir = p;
+                hasExplicitOutput = true;
+            } else {
+                pkgFiles.push_back(p);
+            }
+        }
+    }
+
+    if (pkgFiles.empty()) {
+        std::cerr << "Error: No .pkg files provided\n";
+        PrintUsage(argv[0]);
+        return 1;
+    }
+
+    // Single file with --check-type
+    if (checkTypeOnly && pkgFiles.size() == 1) {
+        return ExtractSingle(pkgFiles[0], outputDir, true);
+    }
+
+    // Multiple files with --check-type not supported
+    if (checkTypeOnly) {
+        std::cerr << "Error: --check-type only works with a single file\n";
+        return 1;
+    }
+
+    // Default output: current directory
+    if (!hasExplicitOutput) {
+        outputDir = std::filesystem::current_path();
+    }
+
+    // Extract all files
+    int total = static_cast<int>(pkgFiles.size());
+    int succeeded = 0;
+    int failed = 0;
+
+    for (int i = 0; i < total; i++) {
+        std::cout << "[" << (i + 1) << "/" << total << "] Extracting " << pkgFiles[i].filename() << "...\n";
+
+        int result = ExtractSingle(pkgFiles[i], outputDir, false);
+        if (result == 0) {
+            succeeded++;
+        } else {
+            failed++;
+        }
+    }
+
+    // Summary
+    if (total > 1) {
+        std::cout << "\n--- Summary ---\n";
+        std::cout << "Total: " << total << " | Succeeded: " << succeeded << " | Failed: " << failed << "\n";
+    }
 
     if (argc == 2 && IsInteractive()) {
         std::cout << "Press [enter] to exit." << std::endl;
         std::cin.get();
     }
 
-    return 0;
+    return failed > 0 ? 1 : 0;
 }
