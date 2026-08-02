@@ -172,7 +172,7 @@ void MainWindow::setupUI() {
 	// ========================================
 	m_dropZone = new QWidget();
 	m_dropZone->setObjectName("dropZone");
-	m_dropZone->setFixedHeight(90);
+	m_dropZone->setFixedHeight(168);
 	m_dropZone->setCursor(Qt::PointingHandCursor);
 	m_dropZone->installEventFilter(this);
 
@@ -225,8 +225,7 @@ void MainWindow::setupUI() {
 	// File list widget
 	m_fileList = new QListWidget();
 	m_fileList->setObjectName("fileList");
-	m_fileList->setMinimumHeight(100);
-	m_fileList->setMaximumHeight(150);
+	m_fileList->setFixedHeight(140);
 	fileListLayout->addWidget(m_fileList);
 
 	mainLayout->addWidget(m_fileListWidget);
