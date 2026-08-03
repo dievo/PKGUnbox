@@ -123,11 +123,8 @@ print('    Resized icon.png (1024x1024) -> 512x512')
 echo ">>> Copying desktop file..."
 cp "$PROJECT_DIR/pkgunbox.desktop" "$APPDIR/usr/share/applications/"
 
-# --- Step 7: Create symlink for AppRun ---
-ln -sf usr/bin/pkgunbox-gui "$APPDIR/AppRun"
-
-# --- Step 8: Run linuxdeploy with Qt plugin ---
-echo ">>> Running linuxdeploy (this may take a while)..."
+# --- Step 8: Run linuxdeploy with Qt plugin (deploy libs only) ---
+echo ">>> Running linuxdeploy (deploying libraries)..."
 cd "$BUILD_DIR"
 
 export DEPLOY_GTK_VERSION=3
@@ -135,8 +132,58 @@ export DEPLOY_GTK_VERSION=3
     --appdir "$APPDIR" \
     --desktop-file "$APPDIR/usr/share/applications/pkgunbox.desktop" \
     --icon-file "$APPDIR/usr/share/icons/hicolor/512x512/apps/pkgunbox.png" \
-    --plugin qt \
+    --plugin qt
+
+# --- Step 9: Replace AppRun with our CLI/GUI auto-detect wrapper ---
+echo ">>> Installing AppRun wrapper (CLI/GUI auto-detect)..."
+cp "$BUILD_DIR/apprun.sh" "$APPDIR/AppRun"
+chmod +x "$APPDIR/AppRun"
+
+# --- Step 10: Build AppImage, then repackage with our wrapper ---
+echo ">>> Building initial AppImage..."
+ARCH=x86_64 ./linuxdeploy-x86_64.AppImage \
+    --appdir "$APPDIR" \
     --output appimage
+
+# The appimagetool (called by linuxdeploy) overwrites AppRun with a symlink
+# to the Exec= binary from the desktop file. We need to:
+# 1. Extract the AppImage
+# 2. Replace AppRun with our CLI/GUI wrapper
+# 3. Repackage
+
+INITIAL_APPIMAGE=$(ls -1 PKGUnbox*.AppImage 2>/dev/null | head -1)
+if [ -n "$INITIAL_APPIMAGE" ]; then
+    echo ">>> Repackaging with CLI/GUI auto-detect wrapper..."
+    TEMP_EXTRACT="$BUILD_DIR/.appimage-repack"
+    rm -rf "$TEMP_EXTRACT"
+    mkdir -p "$TEMP_EXTRACT"
+    
+    # Extract
+    cd "$TEMP_EXTRACT"
+    "$BUILD_DIR/$INITIAL_APPIMAGE" --appimage-extract > /dev/null 2>&1
+    
+    # Replace AppRun with our wrapper
+    rm -f "$TEMP_EXTRACT/squashfs-root/AppRun"
+    cp "$BUILD_DIR/apprun.sh" "$TEMP_EXTRACT/squashfs-root/AppRun"
+    chmod +x "$TEMP_EXTRACT/squashfs-root/AppRun"
+    
+    # Verify
+    echo "    AppRun type: $(file -b "$TEMP_EXTRACT/squashfs-root/AppRun")"
+    
+    # Repackage
+    rm -f "$BUILD_DIR/$INITIAL_APPIMAGE"
+    cd "$TEMP_EXTRACT"
+    ARCH=x86_64 "$BUILD_DIR/appimagetool-x86_64.AppImage" squashfs-root > /dev/null 2>&1
+    
+    # Move back
+    REPACKED=$(ls -1 *.AppImage 2>/dev/null | head -1)
+    if [ -n "$REPACKED" ]; then
+        mv "$TEMP_EXTRACT/$REPACKED" "$BUILD_DIR/$INITIAL_APPIMAGE"
+    fi
+    
+    rm -rf "$TEMP_EXTRACT"
+    cd "$BUILD_DIR"
+fi
 
 # --- Step 9: Rename output with version ---
 APPIMAGE_FILE=$(ls -1 PKGUnbox*.AppImage 2>/dev/null | head -1)
