@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QRegularExpression>
 #include <QFileInfo>
+#include <QDir>
 
 ExtractWorker::ExtractWorker(const QString &pkgPath, const QString &gamesDir, const QString &addonsDir, QObject *parent)
 	: QThread(parent)
@@ -24,6 +25,14 @@ void ExtractWorker::run() {
 	int failCount = 0;
 	m_batchTotalFiles = totalFiles;
 	m_batchCompletedFiles = 0;
+
+	// Ensure output directories exist before extracting
+	if (!m_gamesDir.isEmpty()) {
+		QDir().mkpath(m_gamesDir);
+	}
+	if (!m_addonsDir.isEmpty()) {
+		QDir().mkpath(m_addonsDir);
+	}
 
 	if (totalFiles == 0) {
 		emit log("!!! No files to extract.");

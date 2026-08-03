@@ -101,6 +101,14 @@ static int ExtractSingle(const std::filesystem::path& file,
         return pkgType;
     }
 
+    // Create output directory if it doesn't exist
+    std::error_code ec;
+    std::filesystem::create_directories(output_folder_path, ec);
+    if (ec) {
+        std::cerr << "Error: Cannot create output directory " << output_folder_path << ": " << ec.message() << "\n";
+        return 1;
+    }
+
     // Extract
     std::cout << "  Target: " << output_folder_path << "\n";
 
@@ -159,10 +167,13 @@ int main(int argc, char** argv) {
         }
     }
 
-    // If last argument is a directory and no explicit --output was given, use it as output
+    // If last argument looks like a directory (exists as dir, or doesn't end with .pkg)
+    // and no explicit --output was given, use it as output.
     if (!hasExplicitOutput && !pkgFiles.empty()) {
         auto lastArg = pkgFiles.back();
-        if (std::filesystem::is_directory(lastArg)) {
+        auto ext = lastArg.extension();
+        bool looksLikePkg = (ext == ".pkg" || ext == ".PKG");
+        if (std::filesystem::is_directory(lastArg) || !looksLikePkg) {
             outputDir = lastArg;
             hasExplicitOutput = true;
             pkgFiles.pop_back();
