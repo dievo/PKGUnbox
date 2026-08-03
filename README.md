@@ -40,7 +40,7 @@ built-in way to prepare their game files.
 ## Screenshot
 
 <p align="center">
-  <img src="docs/screenshots/pkgunbox-screen-4.png" alt="PKGUnbox GUI" width="700">
+  <img src="docs/screenshots/pkgunbox-screen-1.png" alt="PKGUnbox GUI" width="700">
 </p>
 
 ## Download
