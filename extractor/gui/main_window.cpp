@@ -460,7 +460,18 @@ void MainWindow::setExtractionActive(bool active) {
 	m_selectAddonsDirBtn->setEnabled(!active);
 	m_saveBtn->setEnabled(!active);
 	m_clearFilesBtn->setEnabled(!active);
+	m_addFilesBtn->setEnabled(!active);
 	m_detectShadPS4Btn->setEnabled(!active);
+
+	// Disable remove buttons in file list during extraction
+	for (int i = 0; i < m_fileList->count(); ++i) {
+		QListWidgetItem *item = m_fileList->item(i);
+		if (QWidget *widget = m_fileList->itemWidget(item)) {
+			if (QPushButton *removeBtn = widget->findChild<QPushButton*>("removeFileBtn")) {
+				removeBtn->setEnabled(!active);
+			}
+		}
+	}
 
 	if (active) {
 		m_progressBar->setValue(0);
