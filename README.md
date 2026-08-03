@@ -54,21 +54,36 @@ Go to [Releases](../../releases) and download the latest version.
 
 ## Quick Start
 
-### Linux
+### Linux (AppImage)
+
+The AppImage works as **both GUI and CLI** — no separate binaries needed.
 
 ```bash
 chmod +x PKGUnbox-linux-x86_64.AppImage
+
+# GUI — double-click or run without arguments
 ./PKGUnbox-linux-x86_64.AppImage
+
+# CLI — run with arguments in a terminal
+./PKGUnbox-linux-x86_64.AppImage /path/to/file.pkg [output_dir]
 ```
+
+The wrapper script auto-detects the mode: arguments present → CLI, no arguments → GUI.
 
 ### Windows
 
-Extract the `.zip` and double-click `pkgunbox-gui.exe`.
+Extract the `.zip` and double-click `pkgunbox-gui.exe` (GUI) or run `pkgunbox.exe` from a terminal (CLI).
 
-### CLI
+### CLI (all platforms)
 
 ```bash
-# Extract a single PKG
+# Linux (via AppImage)
+./PKGUnbox-linux-x86_64.AppImage /path/to/file.pkg /path/to/output/
+
+# Windows
+pkgunbox.exe /path/to/file.pkg /path/to/output/
+
+# From a local build (all platforms)
 ./pkgunbox /path/to/file.pkg /path/to/output/
 
 # Extract multiple PKGs
@@ -121,6 +136,9 @@ Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 Usage: pkgunbox <file.pkg> [output_dir] [options]
        pkgunbox <file1.pkg> <file2.pkg> ... [output_dir]
 
+       On Linux, replace pkgunbox with the AppImage:
+       ./PKGUnbox-linux-x86_64.AppImage <file.pkg> [output_dir]
+
 Arguments:
   file.pkg        One or more PS4 .pkg files to extract
   output_dir      Output directory (default: next to each .pkg)
@@ -131,17 +149,23 @@ Options:
   --help          Show help message
 
 Examples:
-  # Extract a single file
+  # Linux — extract via AppImage
+  ./PKGUnbox-linux-x86_64.AppImage game.pkg /output
+
+  # Linux — check type via AppImage
+  ./PKGUnbox-linux-x86_64.AppImage game.pkg --check-type
+
+  # Windows — extract via CLI executable
+  pkgunbox.exe game.pkg /output
+
+  # Local build — extract
   ./pkgunbox game.pkg /output
 
-  # Extract multiple files
+  # Local build — extract multiple files
   ./pkgunbox game.pkg dlc.pkg update.pkg /output
 
-  # Extract with glob
+  # Local build — extract with glob
   ./pkgunbox *.pkg /output
-
-  # Check package type
-  ./pkgunbox game.pkg --check-type
 
 Exit codes:
   0   Success
@@ -186,10 +210,16 @@ cd extractor/build
 ./build_appimage.sh --rebuild
 ```
 
-The AppImage is fully self-contained — no dependencies needed. Just run it:
+The AppImage is fully self-contained — no dependencies needed. It works as both
+GUI and CLI: double-click to open the GUI, or run from a terminal with arguments
+for CLI mode.
 
 ```bash
+# GUI
 ./PKGUnbox-linux-x86_64-*.AppImage
+
+# CLI
+./PKGUnbox-linux-x86_64-*.AppImage /path/to/file.pkg
 ```
 
 ### Build (Windows)
@@ -220,9 +250,18 @@ cd PKGUnbox/extractor/build
 
 ### Run
 
+From a local build (raw binaries):
+
 ```bash
 ./pkgunbox /path/to/file.pkg    # CLI
 ./pkgunbox-gui                   # GUI
+```
+
+From an AppImage (Linux):
+
+```bash
+./PKGUnbox-linux-x86_64-*.AppImage                         # GUI (no args)
+./PKGUnbox-linux-x86_64-*.AppImage /path/to/file.pkg       # CLI
 ```
 
 ## Platform Support
