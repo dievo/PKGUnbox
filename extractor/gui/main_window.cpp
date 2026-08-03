@@ -671,15 +671,34 @@ void MainWindow::onStartExtraction() {
 
 void MainWindow::onCancelExtraction() {
 	if (m_worker && m_worker->isRunning()) {
+		// Disable cancel button immediately to prevent multiple clicks
+		m_cancelBtn->setEnabled(false);
+		m_cancelBtn->setText(tr("Canceling..."));
 		m_logArea->append("\nCanceling...");
+
+		m_worker->requestInterruption();
 		m_worker->quit();
-		if (!m_worker->wait(3000)) {
+
+		// Wait up to 3s, keeping UI responsive
+		for (int i = 0; i < 30 && m_worker->isRunning(); ++i) {
+			QApplication::processEvents();
+			m_worker->wait(100);
+		}
+		if (m_worker->isRunning()) {
 			m_worker->terminate();
 			m_worker->wait(1000);
 		}
+
 		m_logArea->append("Canceled by user.");
-		setExtractionActive(false);
+		m_worker = nullptr;
+
+		// Brief cooldown before re-enabling Extract All
+		m_cancelBtn->setVisible(false);
 		m_statusLabel->setText(tr("Canceled"));
+
+		QTimer::singleShot(500, this, [this]() {
+			setExtractionActive(false);
+		});
 	}
 }
 
