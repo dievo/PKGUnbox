@@ -155,14 +155,17 @@ int main(int argc, char** argv) {
         } else if (arg == "--help" || arg == "-h") {
             // Already handled above
         } else {
-            // Check if it's a directory (output_dir without --output flag)
-            std::filesystem::path p(arg);
-            if (std::filesystem::is_directory(p) && !hasExplicitOutput && pkgFiles.empty()) {
-                outputDir = p;
-                hasExplicitOutput = true;
-            } else {
-                pkgFiles.push_back(p);
-            }
+            pkgFiles.push_back(std::filesystem::path(arg));
+        }
+    }
+
+    // If last argument is a directory and no explicit --output was given, use it as output
+    if (!hasExplicitOutput && !pkgFiles.empty()) {
+        auto lastArg = pkgFiles.back();
+        if (std::filesystem::is_directory(lastArg)) {
+            outputDir = lastArg;
+            hasExplicitOutput = true;
+            pkgFiles.pop_back();
         }
     }
 
