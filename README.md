@@ -103,10 +103,16 @@ Extract the `.zip` and double-click `pkgunbox-gui.exe`.
 | **4. Done** | Green bar, success message, log ready to copy |
 
 <p align="center">
-  <img src="docs/screenshots/pkgunbox-screen-1.png" width="160" alt="Step 1">
-  <img src="docs/screenshots/pkgunbox-screen-2.png" width="160" alt="Step 2">
-  <img src="docs/screenshots/pkgunbox-screen-3.png" width="160" alt="Step 3">
-  <img src="docs/screenshots/pkgunbox-screen-4.png" width="160" alt="Step 4">
+  <table>
+    <tr>
+      <td align="center"><img src="docs/screenshots/pkgunbox-screen-1.png" width="400" alt="Step 1 — Drop"></td>
+      <td align="center"><img src="docs/screenshots/pkgunbox-screen-2.png" width="400" alt="Step 2 — Configure"></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="docs/screenshots/pkgunbox-screen-3.png" width="400" alt="Step 3 — Extract"></td>
+      <td align="center"><img src="docs/screenshots/pkgunbox-screen-4.png" width="400" alt="Step 4 — Done"></td>
+    </tr>
+  </table>
 </p>
 
 ## CLI Reference
