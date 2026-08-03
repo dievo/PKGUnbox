@@ -120,7 +120,7 @@ QPushButton#extractBtn:disabled {
 
 /* Cancel button — Red */
 QPushButton#cancelBtn {
-    background-color: #da373c;
+    background-color: #dc2626;
     color: #ffffff;
     font-size: 14px;
     font-weight: 700;
@@ -128,7 +128,12 @@ QPushButton#cancelBtn {
 }
 
 QPushButton#cancelBtn:hover {
-    background-color: #a12d31;
+    background-color: #b91c1c;
+}
+
+QPushButton#cancelBtn:disabled {
+    background-color: #450a0a;
+    color: #7f1d1d;
 }
 
 /* Save button — Compact, inline */

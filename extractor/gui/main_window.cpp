@@ -346,7 +346,7 @@ void MainWindow::setupUI() {
 	extractLayout->addWidget(m_extractBtn);
 
 	m_cancelBtn = new QPushButton();
-	m_cancelBtn->setIcon(makeIcon("cancel", colCancel));
+	m_cancelBtn->setIcon(makeIcon("cancel", QColor("#ffffff")));
 	m_cancelBtn->setText(tr("Cancel"));
 	m_cancelBtn->setObjectName("cancelBtn");
 	m_cancelBtn->setMinimumSize(140, 40);
@@ -475,6 +475,7 @@ void MainWindow::setExtractionActive(bool active) {
 	}
 
 	if (active) {
+		m_cancelBtn->setText(tr("Cancel"));
 		m_progressBar->setValue(0);
 		m_progressBar->setProperty("complete", false);
 		m_progressBar->style()->unpolish(m_progressBar);
