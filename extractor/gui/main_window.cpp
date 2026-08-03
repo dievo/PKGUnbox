@@ -455,6 +455,7 @@ void MainWindow::loadSettings() {
 void MainWindow::setExtractionActive(bool active) {
 	m_extractBtn->setEnabled(!active);
 	m_extractBtn->setVisible(!active);
+	m_cancelBtn->setEnabled(active);
 	m_cancelBtn->setVisible(active);
 	m_selectGamesDirBtn->setEnabled(!active);
 	m_selectAddonsDirBtn->setEnabled(!active);
