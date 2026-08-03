@@ -28,6 +28,14 @@
         <translation>Clear all selected files</translation>
     </message>
     <message>
+        <source>+ Add</source>
+        <translation>+ Add</translation>
+    </message>
+    <message>
+        <source>Add more PKG files</source>
+        <translation>Add more PKG files</translation>
+    </message>
+    <message>
         <source>Destination</source>
         <translation>Destination</translation>
     </message>

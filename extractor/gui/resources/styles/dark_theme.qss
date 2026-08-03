@@ -216,6 +216,23 @@ QPushButton#clearFilesBtn:hover {
     color: #fca5a5;
 }
 
+/* Add files button — Compact, inline */
+QPushButton#addFilesBtn {
+    background-color: transparent;
+    color: #22c55e;
+    border: 1px solid #14532d;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QPushButton#addFilesBtn:hover {
+    background-color: #052e16;
+    border-color: #22c55e;
+    color: #86efac;
+}
+
 /* === File List Items === */
 QLabel#fileItemName {
     color: #dbdee1;

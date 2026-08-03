@@ -28,6 +28,14 @@
         <translation>Limpar todos os arquivos selecionados</translation>
     </message>
     <message>
+        <source>+ Add</source>
+        <translation>+ Adicionar</translation>
+    </message>
+    <message>
+        <source>Add more PKG files</source>
+        <translation>Adicionar mais arquivos PKG</translation>
+    </message>
+    <message>
         <source>Destination</source>
         <translation>Destino</translation>
     </message>

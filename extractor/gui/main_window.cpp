@@ -212,12 +212,19 @@ void MainWindow::setupUI() {
 	fileListLayout->setContentsMargins(0, 0, 0, 0);
 	fileListLayout->setSpacing(4);
 
-	// Header row with count and clear button
+	// Header row with count, add button, and clear button
 	auto *fileListHeader = new QHBoxLayout();
 	m_fileCountLabel = new QLabel(tr("Selected Files (0)"));
 	m_fileCountLabel->setObjectName("fileCountLabel");
 	fileListHeader->addWidget(m_fileCountLabel);
 	fileListHeader->addStretch();
+
+	m_addFilesBtn = new QPushButton(tr("+ Add"));
+	m_addFilesBtn->setObjectName("addFilesBtn");
+	m_addFilesBtn->setFixedHeight(24);
+	m_addFilesBtn->setToolTip(tr("Add more PKG files"));
+	connect(m_addFilesBtn, &QPushButton::clicked, this, &MainWindow::onSelectFiles);
+	fileListHeader->addWidget(m_addFilesBtn);
 
 	m_clearFilesBtn = new QPushButton(tr("Clear All"));
 	m_clearFilesBtn->setObjectName("clearFilesBtn");
@@ -866,6 +873,8 @@ void MainWindow::retranslateUI() {
 	m_dropText->setText(tr("Drag .pkg files here"));
 	m_dropSubtext->setText(tr("or click to browse (multiple files supported)"));
 	m_fileCountLabel->setText(tr("Selected Files (%1)").arg(m_selectedFiles.size()));
+	m_addFilesBtn->setText(tr("+ Add"));
+	m_addFilesBtn->setToolTip(tr("Add more PKG files"));
 	m_clearFilesBtn->setText(tr("Clear All"));
 	m_clearFilesBtn->setToolTip(tr("Clear all selected files"));
 

@@ -70,6 +70,7 @@ private:
 	QListWidget *m_fileList;
 	QLabel *m_fileCountLabel;
 	QPushButton *m_clearFilesBtn;
+	QPushButton *m_addFilesBtn;
 
 	QLineEdit *m_gamesDirInput;
 	QLineEdit *m_addonsDirInput;
