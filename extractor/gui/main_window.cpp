@@ -646,6 +646,7 @@ void MainWindow::onStartExtraction() {
 	connect(m_worker, &ExtractWorker::log, this, &MainWindow::onExtractionLog);
 	connect(m_worker, &ExtractWorker::overallProgress, this, &MainWindow::onOverallProgress);
 	connect(m_worker, &ExtractWorker::batchProgress, this, &MainWindow::onBatchProgress);
+	connect(m_worker, &ExtractWorker::progress, this, &MainWindow::onFileProgress);
 	connect(m_worker, &ExtractWorker::finished, this, &MainWindow::onExtractionFinished);
 	m_worker->start();
 }
@@ -745,10 +746,23 @@ void MainWindow::onOverallProgress(int percent) {
 }
 
 void MainWindow::onBatchProgress(int currentFile, int totalFiles) {
+	m_batchCurrentFile = currentFile;
+	m_batchTotalFiles = totalFiles;
 	m_statusLabel->setText(tr("Extracting file %1/%2...").arg(currentFile).arg(totalFiles));
 }
 
+void MainWindow::onFileProgress(int current, int total) {
+	if (m_batchTotalFiles > 0) {
+		m_statusLabel->setText(tr("Extracting file %1/%2 (%3/%4)...").arg(m_batchCurrentFile).arg(m_batchTotalFiles).arg(current).arg(total));
+	} else {
+		m_statusLabel->setText(tr("Extracting file %1/%2...").arg(current).arg(total));
+	}
+}
+
 void MainWindow::onExtractionFinished(int returnCode) {
+	m_batchCurrentFile = 0;
+	m_batchTotalFiles = 0;
+
 	m_logArea->append("");
 	m_logArea->append("======================================");
 

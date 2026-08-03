@@ -36,6 +36,7 @@ private slots:
 	void onExtractionLog(const QString &message);
 	void onOverallProgress(int percent);
 	void onBatchProgress(int currentFile, int totalFiles);
+	void onFileProgress(int current, int total);
 	void onExtractionFinished(int returnCode);
 	void onLanguageChanged(int index);
 	void onCopyLog();
@@ -93,6 +94,10 @@ private:
 
 	// Selected files
 	QStringList m_selectedFiles;
+
+	// Batch progress tracking
+	int m_batchCurrentFile = 0;
+	int m_batchTotalFiles = 0;
 
 	ExtractWorker *m_worker;
 	SettingsManager *m_settings;

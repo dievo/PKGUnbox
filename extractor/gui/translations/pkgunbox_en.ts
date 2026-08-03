@@ -220,6 +220,10 @@
         <translation>Extracting file %1/%2...</translation>
     </message>
     <message>
+        <source>Extracting file %1/%2 (%3/%4)...</source>
+        <translation>Extracting file %1/%2 (%3/%4)...</translation>
+    </message>
+    <message>
         <source>Remove file</source>
         <translation>Remove file</translation>
     </message>
