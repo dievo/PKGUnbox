@@ -136,8 +136,8 @@
         <translation>Directorio de DLCs: %1</translation>
     </message>
     <message>
-        <source>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; shadPS4 detected! Directories configured.</source>
-        <translation>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; ¡shadPS4 detectado! Directorios configurados.</translation>
+        <source>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; shadPS4 detected! Directories configured and saved.</source>
+        <translation>&lt;span style='color:#22c55e;'&gt;✔&lt;/span&gt; ¡shadPS4 detectado! Directorios configurados y guardados.</translation>
     </message>
     <message>
         <source>shadPS4 detected!</source>

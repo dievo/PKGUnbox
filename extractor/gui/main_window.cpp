@@ -750,7 +750,6 @@ void MainWindow::onDetectShadPS4() {
 			});
 		}
 
-		m_statusLabel->setText(tr("<span style='color:#22c55e;'>✔</span> shadPS4 detected! Directories configured."));
 		m_logArea->append("======================================");
 		m_logArea->append(tr("shadPS4 detected!"));
 		m_logArea->append(tr("Config: %1").arg(config.configPath));
@@ -761,6 +760,11 @@ void MainWindow::onDetectShadPS4() {
 			m_logArea->append(tr("DLCs: %1").arg(config.addonsDir));
 		}
 		m_logArea->append("======================================");
+
+		// Auto-save settings on successful detection
+		m_settings->setGamesDir(m_gamesDirInput->text());
+		m_settings->setAddonsDir(m_addonsDirInput->text());
+		m_statusLabel->setText(tr("<span style='color:#22c55e;'>✔</span> shadPS4 detected! Directories configured and saved."));
 	} else {
 		m_statusLabel->setText(tr("<span style='color:#ef4444;'>✘</span> shadPS4 not found. Configure directories manually."));
 		m_logArea->append(tr("shadPS4 config.json not found."));
