@@ -325,16 +325,40 @@ jobs:
 
             The [shadPS4 emulator](https://github.com/shadps4-emu/shadPS4) removed PKG extraction from its core to focus on emulation. **PKGUnbox fills that gap** — a dedicated companion tool for preparing your game files.
 
-            ### ✨ Features
+            ### ✨ What's New in v2.0.0
 
-            - **Drag & Drop** — Drop a `.pkg` file directly onto the window
-            - **Auto Detection** — Automatically detects PKG type (base, update, DLC)
-            - **Progress Bar** — Visual feedback during extraction
-            - **Copy Log** — One-click copy of the full extraction log
-            - **Dark Theme** — Easy on the eyes, with blurple accent colors
-            - **Multi-language** — English, Português, Español
-            - **Save Directories** — Remember your Games/DLCs paths across sessions
-            - **CLI Mode** — For power users and scripting
+            **🎮 Batch Extraction**
+            - Extract multiple `.pkg` files in a single session
+            - Add files via drag-and-drop or the new **+ Add** button
+            - Individual remove button per file in the list
+            - Cumulative progress bar across all files
+
+            **🔍 shadPS4 Auto-Detection**
+            - One-click **Auto-detect shadPS4** button finds your Games/DLCs folders automatically
+            - Settings auto-saved on successful detection
+
+            **📊 Better Progress Feedback**
+            - Detailed extraction progress in the status bar (file X/Y, bytes extracted)
+            - Live log shows type detection, target paths, and per-file status
+            - Blue progress bar during extraction, green on completion
+
+            **🖥️ CLI Improvements**
+            - Multi-file support: `pkgunbox game.pkg dlc.pkg update.pkg /output`
+            - Auto-create output directories if they don't exist
+            - AppImage auto-detects GUI vs CLI mode (no arguments → GUI, with arguments → CLI)
+
+            **✨ UI/UX Polish**
+            - Clear Log button alongside Copy Log
+            - Better button labels and tooltips
+            - Improved cancel button behavior during extraction
+            - Add/remove buttons disabled while extracting
+            - Dark theme browse button improvements
+
+            **🐛 Bug Fixes**
+            - Fixed shadPS4 config detection paths and format
+            - Fixed output directory detection in argument parsing
+            - Fixed cancel button states and visual feedback
+            - Fixed AppImage build (linuxdeploy qt plugin wrapper overwrite)
 
             ### 📦 Downloads
 
