@@ -123,7 +123,15 @@ print('    Resized icon.png (1024x1024) -> 512x512')
 echo ">>> Copying desktop file..."
 cp "$PROJECT_DIR/pkgunbox.desktop" "$APPDIR/usr/share/applications/"
 
-# --- Step 8: Run linuxdeploy with Qt plugin (deploy libs only) ---
+# --- Step 8: Save real binaries before linuxdeploy (qt plugin replaces them with wrappers) ---
+echo ">>> Saving real binaries before linuxdeploy..."
+SAVEDIR="$BUILD_DIR/.saved-binaries"
+rm -rf "$SAVEDIR"
+mkdir -p "$SAVEDIR"
+cp "$APPDIR/usr/bin/pkgunbox" "$SAVEDIR/"
+cp "$APPDIR/usr/bin/pkgunbox-gui" "$SAVEDIR/"
+
+# --- Step 9: Run linuxdeploy with Qt plugin (deploy libs only) ---
 echo ">>> Running linuxdeploy (deploying libraries)..."
 cd "$BUILD_DIR"
 
@@ -134,22 +142,18 @@ export DEPLOY_GTK_VERSION=3
     --icon-file "$APPDIR/usr/share/icons/hicolor/512x512/apps/pkgunbox.png" \
     --plugin qt
 
-# --- Step 9: Replace AppRun with our CLI/GUI auto-detect wrapper ---
-echo ">>> Installing AppRun wrapper (CLI/GUI auto-detect)..."
-cp "$BUILD_DIR/apprun.sh" "$APPDIR/AppRun"
-chmod +x "$APPDIR/AppRun"
-
 # --- Step 10: Build AppImage, then repackage with our wrapper ---
 echo ">>> Building initial AppImage..."
 ARCH=x86_64 ./linuxdeploy-x86_64.AppImage \
     --appdir "$APPDIR" \
     --output appimage
 
-# The appimagetool (called by linuxdeploy) overwrites AppRun with a symlink
-# to the Exec= binary from the desktop file. We need to:
+# linuxdeploy qt plugin replaces pkgunbox-gui with a Qt launcher wrapper,
+# and appimagetool overwrites AppRun with a symlink. We need to:
 # 1. Extract the AppImage
-# 2. Replace AppRun with our CLI/GUI wrapper
-# 3. Repackage
+# 2. Restore real binaries (linuxdeploy clobbered them)
+# 3. Replace AppRun with our CLI/GUI wrapper
+# 4. Repackage
 
 INITIAL_APPIMAGE=$(ls -1 PKGUnbox*.AppImage 2>/dev/null | head -1)
 if [ -n "$INITIAL_APPIMAGE" ]; then
@@ -162,13 +166,21 @@ if [ -n "$INITIAL_APPIMAGE" ]; then
     cd "$TEMP_EXTRACT"
     "$BUILD_DIR/$INITIAL_APPIMAGE" --appimage-extract > /dev/null 2>&1
     
-    # Replace AppRun with our wrapper
+    # Restore real binaries (linuxdeploy qt plugin overwrites them with wrappers)
+    cp "$SAVEDIR/pkgunbox" "$TEMP_EXTRACT/squashfs-root/usr/bin/pkgunbox"
+    cp "$SAVEDIR/pkgunbox-gui" "$TEMP_EXTRACT/squashfs-root/usr/bin/pkgunbox-gui"
+    chmod +x "$TEMP_EXTRACT/squashfs-root/usr/bin/pkgunbox"
+    chmod +x "$TEMP_EXTRACT/squashfs-root/usr/bin/pkgunbox-gui"
+    
+    # Replace AppRun with our CLI/GUI auto-detect wrapper
     rm -f "$TEMP_EXTRACT/squashfs-root/AppRun"
     cp "$BUILD_DIR/apprun.sh" "$TEMP_EXTRACT/squashfs-root/AppRun"
     chmod +x "$TEMP_EXTRACT/squashfs-root/AppRun"
     
     # Verify
     echo "    AppRun type: $(file -b "$TEMP_EXTRACT/squashfs-root/AppRun")"
+    echo "    pkgunbox type: $(file -b "$TEMP_EXTRACT/squashfs-root/usr/bin/pkgunbox")"
+    echo "    pkgunbox-gui type: $(file -b "$TEMP_EXTRACT/squashfs-root/usr/bin/pkgunbox-gui")"
     
     # Repackage
     rm -f "$BUILD_DIR/$INITIAL_APPIMAGE"
@@ -182,6 +194,7 @@ if [ -n "$INITIAL_APPIMAGE" ]; then
     fi
     
     rm -rf "$TEMP_EXTRACT"
+    rm -rf "$SAVEDIR"
     cd "$BUILD_DIR"
 fi
 
