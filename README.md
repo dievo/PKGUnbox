@@ -113,7 +113,7 @@ pkgunbox.exe /path/to/file.pkg /path/to/output/
 | Step | What you see |
 |------|-------------|
 | **1. Drop** | Drag a `.pkg` file or click to browse |
-| **2. Configure** | Set Games and DLCs destination directories |
+| **2. Configure** | Set Games and DLCs dirs — or click **Auto-detect shadPS4** to fill them automatically |
 | **3. Extract** | Click Extract — watch the progress bar and live log |
 | **4. Done** | Green bar, success message, log ready to copy |
 
