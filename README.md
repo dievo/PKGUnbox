@@ -185,7 +185,7 @@ Exit codes:
 ### Clone
 
 ```bash
-git clone --recurse-submodules <repo-url>
+git clone --recurse-submodules https://github.com/dievo/PKGUnbox.git
 cd PKGUnbox
 ```
 
